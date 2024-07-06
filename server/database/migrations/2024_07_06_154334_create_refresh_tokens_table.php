@@ -11,23 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('refresh_tokens', function (Blueprint $table) {
             $table->id();
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->unsignedBigInteger('role_id');
-            $table->foreign('role_id')
-                ->references('id')->on('roles')
+            $table->string('refresh_token')->unique();
+            $table->timestamp('expires_in')->nullable();
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')
+                ->references('id')->on('users')
                 ->onDelete('cascade');
             $table->timestamps();
         });
     }
-
+    
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('refresh_tokens');
     }
 };
