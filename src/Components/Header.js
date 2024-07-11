@@ -1,9 +1,26 @@
+// Header.js
 import React, { Component } from "react";
 import { Nav, Navbar } from "react-bootstrap";
-import { logo, heart, notifications, userIcon } from './images'; // Импорт изображений из файла images.js
-import './Header.css';
+import { logo, heart, notifications, userIcon } from '../Images/HeaderImages'
+import '../Styles/Header.css';
+import LoginModal from './LoginModal';
 
 export default class Header extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showModal: false
+        };
+    }
+
+    handleShow = () => {
+        this.setState({ showModal: true });
+    }
+
+    handleClose = () => {
+        this.setState({ showModal: false });
+    }
+
     render() {
         return (
             <div className="Navbar">
@@ -45,8 +62,10 @@ export default class Header extends Component {
                             alt="User_icon"
                         />
                     </Navbar.Brand>
-                    <Nav.Link className="user" href="/">ID пользователя</Nav.Link>
+                    <Nav.Link className="user" onClick={this.handleShow}>Вход / регистрация</Nav.Link>
                 </Navbar>
+
+                <LoginModal show={this.state.showModal} handleClose={this.handleClose} />
             </div>
         );
     }
