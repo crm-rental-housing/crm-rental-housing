@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import '../Styles/HomePage.css'; // Убедитесь, что путь правильный и файл существует
+import '../../Styles/HomePage.css'; // Убедитесь, что путь правильный и файл существует
 
 export default class HomePage extends Component {
     handleEditInfo = () => {

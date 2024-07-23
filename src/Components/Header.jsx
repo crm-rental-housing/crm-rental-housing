@@ -3,7 +3,7 @@ import { Nav, Navbar } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { logo, heart, notifications, userIcon } from '../Images/HeaderImages';
 import '../Styles/Header.css';
-import LoginModal from './LoginModal';
+import LoginModal from './headerRegistration/LoginModal';
 
 export default class Header extends Component {
     constructor(props) {
