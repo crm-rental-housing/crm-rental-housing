@@ -1,7 +1,7 @@
-// Header.js
 import React, { Component } from "react";
 import { Nav, Navbar } from "react-bootstrap";
-import { logo, heart, notifications, userIcon } from '../Images/HeaderImages'
+import { Link } from "react-router-dom";
+import { logo, heart, notifications, userIcon } from '../Images/HeaderImages';
 import '../Styles/Header.css';
 import LoginModal from './LoginModal';
 
@@ -35,10 +35,10 @@ export default class Header extends Component {
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
-                            <Nav.Link href="/">Главная</Nav.Link>
-                            <Nav.Link href="/search">Поиск</Nav.Link>
-                            <Nav.Link href="/website">О сайте</Nav.Link>
-                            <Nav.Link href="/contacts">Связь c нами</Nav.Link>
+                            <Nav.Link as={Link} to="/">Главная</Nav.Link>
+                            <Nav.Link as={Link} to="/search">Поиск</Nav.Link>
+                            <Nav.Link as={Link} to="/website">О сайте</Nav.Link>
+                            <Nav.Link as={Link} to="/contacts">Связь c нами</Nav.Link>
                         </Nav>
                     </Navbar.Collapse>
                     <Navbar.Brand href="/">
