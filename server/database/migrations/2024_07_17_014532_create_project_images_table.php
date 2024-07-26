@@ -11,23 +11,22 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('refresh_tokens', function (Blueprint $table) {
+        Schema::create('project_images', function (Blueprint $table) {
             $table->id();
-            $table->string('value')->unique();
-            $table->timestamp('expires_in')->nullable();
-            $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')
-                ->references('id')->on('users')
+            $table->string('image_url')->unique();
+            $table->unsignedBigInteger('project_id');
+            $table->foreign('project_id')
+                ->references('id')->on('projects')
                 ->onDelete('cascade');
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('refreshTokens');
+        Schema::dropIfExists('project_images');
     }
 };

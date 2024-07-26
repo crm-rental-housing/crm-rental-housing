@@ -5,30 +5,27 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\Role;
 
-class RoleMiddleware
+class AddRoleMiddleware
 {
   /**
    * Handle an incoming request.
    *
    * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
    */
-  public function handle(Request $request, Closure $next, $roles): Response
+  public function handle(Request $request, Closure $next, $role_name): Response
   {
     try {
-      $rolesArray = explode(' ', $roles);
-      $user = auth()->user();
-      foreach ($rolesArray as $role) {
-        $role = trim($role);
-        if ($user->role->value === $role) {
-          return $next($request);
-        }
+      $role = Role::where('value', $role_name)->first();
+      if (!$role) {
+        return response()->json([
+          'message' => 'Нет такой роли'
+        ], 400);
       }
-      return response()->json([
-        'message' => 'Not found'
-      ], 404);
+      $request->merge(['role' => $role->value]);
+      return $next($request);
     } catch (\Throwable $th) {
-      echo $th;
       return response()->json([
         'message' => 'Произошла ошибка на сервере'
       ], 500);

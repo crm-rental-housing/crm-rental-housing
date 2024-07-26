@@ -19,9 +19,10 @@ class User extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = [
-        'username',
+        'email',
         'password',
         'role_id',
+        'company_id'
     ];
 
     /**
@@ -53,6 +54,11 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
+    public function info(): BelongsTo 
+    {
+      return $this->belongsTo(UserInfo::class);
+    }
+
     public function role(): BelongsTo
     {
       return $this->belongsTo(Role::class);
@@ -61,5 +67,20 @@ class User extends Authenticatable implements JWTSubject
     public function refreshToken(): BelongsTo
     {
       return $this->belongsTo(RefreshToken::class);
+    }
+
+    public function company(): BelongsTo
+    {
+      return $this->belongsTo(Company::class);
+    }
+
+    public function projects(): BelongsTo
+    {
+      return $this->belongsTo(Project::class);
+    }
+
+    public function ban(): BelongsTo
+    {
+      return $this->belongsTo(BlackList::class);
     }
 }

@@ -10,7 +10,7 @@ class RefreshToken extends Model
     use HasFactory;
 
     protected $fillable = [
-        'refresh_token',
+        'value',
         'expires_in',
         'user_id'
     ];

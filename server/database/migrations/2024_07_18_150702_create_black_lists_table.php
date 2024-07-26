@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('refresh_tokens', function (Blueprint $table) {
+        Schema::create('black_lists', function (Blueprint $table) {
             $table->id();
-            $table->string('value')->unique();
-            $table->timestamp('expires_in')->nullable();
+            $table->boolean('is_banned')->default(false);
+            $table->string('reason')->nullable();
+            $table->timestamp('banned_at')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')
                 ->references('id')->on('users')
@@ -22,12 +23,12 @@ return new class extends Migration
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('refreshTokens');
+        Schema::dropIfExists('black_lists');
     }
 };

@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\Controller;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\RefreshToken;
+use App\Mail\EmailVerification;
 
 /**
  * НУЖНО ДОБАВИТЬ ПРОВЕРКУ НА ОПРЕДЕЛЕННОЕ КОЛ-ВО ОДНОВРЕМЕННЫХ СЕССИЙ
@@ -20,15 +22,17 @@ class AuthController extends Controller
   public function register(Request $request) {
     try {
       $validatedData = $request->validate([
-        'username' => 'required|string|max:20|unique:users',
+        'email' => 'required|string|max:50|unique:users',
         'password' => 'required|string|min:8'
       ]);
 
       $user = User::create([
-        'username' => $validatedData['username'],
+        'email' => $validatedData['email'],
         'password' => Hash::make($validatedData['password']),
-        'role_id' => 1, // ID роли пользователя
+        'role_id' => 2, // ID роли пользователя
       ]);
+
+      Mail::to($user->email)->send(new EmailVerification($user));
     
       $accessToken = JWTAuth::fromUser($user);
       $refreshTokenCookie = $this->generateRefreshToken($user);
@@ -45,11 +49,11 @@ class AuthController extends Controller
   public function login(Request $request) {
     try {
       $validatedData = $request->validate([
-        'username' => 'required|string',
+        'email' => 'required|string',
         'password' => 'required|string'
       ]);
 
-      $user = User::where('username', $validatedData['username'])->first();
+      $user = User::where('email', $validatedData['email'])->first();
       if (!$user || !Hash::check($validatedData['password'], $user->password)) {
         return response()->json([
           'message' => 'Неверное имя пользователя или пароль'
@@ -72,9 +76,9 @@ class AuthController extends Controller
       if (!$refreshToken) {
         return response()->json([
           'message' => 'Refresh token not provided'
-        ], 500);
+        ], 400);
       }
-      RefreshToken::where('refresh_token', $refreshToken)->delete();
+      RefreshToken::where('value', $refreshToken)->delete();
       auth()->logout();
       return response()
         ->json([
@@ -88,6 +92,7 @@ class AuthController extends Controller
     }
   }
 
+  // Добавь проверку на время жизни refresh token
   public function refresh(Request $request) {
     try {
       $requestRefreshToken = $request->cookie('refresh_token');
@@ -96,13 +101,12 @@ class AuthController extends Controller
           'message' => 'Refresh token not provided'
         ]);
       }
-      RefreshToken::where('refresh_token', $requestRefreshToken)->delete();
+      RefreshToken::where('value', $requestRefreshToken)->delete();
       $user = auth()->user();
       $refreshTokenCookie = $this->generateRefreshToken($user);
       $newAccessToken = JWTAuth::fromUser($user);
       return $this->respondWithTokens($newAccessToken, $refreshTokenCookie);
     } catch (\Throwable $th) {
-      echo $th;
       return response()->json([
         'message' => 'Произошла ошибка',
       ], 400);
@@ -129,7 +133,7 @@ class AuthController extends Controller
     $expiresInSeconds = $expiresIn->timestamp;
 
     $refreshTokenModel = RefreshToken::create([
-      'refresh_token' => $refreshToken,
+      'value' => $refreshToken,
       'expires_in' => $expiresIn,
       'user_id' => $user->id,
     ]);

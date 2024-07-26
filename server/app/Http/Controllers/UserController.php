@@ -11,7 +11,7 @@ class UserController extends Controller
 {
   public function index() {
     try {
-      $users = User::orderBy('username', 'asc')->get(); // или User::all()
+      $users = User::orderBy('email', 'asc')->get(); // или User::all()
       return response()->json([
         'users' => $users
       ]);
@@ -27,13 +27,14 @@ class UserController extends Controller
       $user = User::where('id', $userId)->first();
       if (!$user) {
         return response()->json([
-          'message' => "Пользователя с ID '$userId' не существует"
-        ]);
+          'message' => 'Not found'
+        ], 404);
       }
       return response()->json([
         'user' => [
-          'username' => $user->username,
-          'role' => $user->role->name,
+          'email' => $user->email,
+          'info' => $user->info,
+          'role' => $user->role->value,
         ]
       ]);
     } catch (\Throwable $th) {
@@ -46,20 +47,20 @@ class UserController extends Controller
   public function add(Request $request) {
     try {
       $validatedData = $request->validate([
-        'username' => 'required|string|max:20|unique:users',
+        'email' => 'required|string|email|unique:users',
         'password' => 'required|string|min:8',
         'role' => 'required|string'
       ]);
 
-      $role = Role::where('name', $validatedData['role'])->first();
+      $role = Role::where('value', $validatedData['role'])->first();
       if (!$role) {
         return response()->json([
           'message' => 'Роли с таким названием не существует'
-        ], 400);
+        ], 404);
       }
 
       $user = User::create([
-        'username' => $validatedData['username'],
+        'email' => $validatedData['email'],
         'password' => Hash::make($validatedData['password']),
         'role_id' => $role->id,
       ]);
@@ -68,6 +69,7 @@ class UserController extends Controller
         'message' => 'Пользователь успешно добавлен',
       ]);
     } catch (\Throwable $th) {
+      echo $th;
       return response()->json([
         'message' => 'Не удалось добавить пользователя',
       ], 400);
@@ -79,17 +81,17 @@ class UserController extends Controller
       $user = User::where('id', $userId)->first();
       if (!$user) {
         return response()->json([
-          'message' => "Пользователя с ID '$userId' не существует"
-        ]);
+          'message' => 'Not found'
+        ], 404);
       }
 
       $validatedData = $request->validate([
-        'username' => 'required|string|max:255|unique:users',
-        'password' => 'required|string|min:8',
+        'email' => ['required', 'string', 'email', Rule::unique('users')->ignore($user->id)],
+        'password' => ['required', 'string'],
       ]);
 
       $newData = [
-        'username' => $validatedData['username'],
+        'email' => $validatedData['email'],
         'password' => Hash::make($validatedData['password']),
       ];
       
@@ -98,7 +100,6 @@ class UserController extends Controller
         'message' => 'Данные пользователя успешно обновлены'
       ]);
     } catch (\Throwable $th) {
-      echo $th;
       return response()->json([
         'message' => 'Не удалось обновить данные пользователя'
       ], 400);
@@ -111,7 +112,7 @@ class UserController extends Controller
       if (!$user) {
         return response()->json([
           'message' => "Пользователя с ID '$userId' не существует"
-        ]);
+        ], 404);
       }
       $user->delete();
       return response()->json([
@@ -120,7 +121,7 @@ class UserController extends Controller
     } catch (\Throwable $th) {
       return response()->json([
         'message' => 'Не удалось удалить пользователя',
-      ], 400);
+      ], 500);
     }
   }
 
@@ -130,8 +131,8 @@ class UserController extends Controller
       return response()->json([
         'data' => [
           'user' => [
-            'username' => $user['username'],
-            'role' => $user->role->name,
+            'email' => $user['email'],
+            'info' => $user->info
           ]
         ],
       ]);
@@ -148,11 +149,11 @@ class UserController extends Controller
       $validatedData = $request->validate([
         'role' => 'required|string'
       ]);
-      $role = Role::where('name', $validatedData['role'])->first();
+      $role = Role::where('value', $validatedData['role'])->first();
       if (!$role) {
         return response()->json([
           'message' => 'Роли с таким названием не существует'
-        ], 400);
+        ], 404);
       }
       $user->role_id = $role->id;
       $user->save();
