@@ -79,6 +79,16 @@ class User extends Authenticatable implements JWTSubject
       return $this->belongsTo(Project::class);
     }
 
+    public function entities(): BelongsTo
+    {
+      return $this->belongsTo(Entity::class);
+    }
+
+    public function appartments(): BelongsTo
+    {
+      return $this->belongsTo(Appartment::class);
+    }
+
     public function ban(): BelongsTo
     {
       return $this->belongsTo(BlackList::class);

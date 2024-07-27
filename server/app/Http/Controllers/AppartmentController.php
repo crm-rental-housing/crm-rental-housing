@@ -54,8 +54,9 @@ class AppartmentController extends Controller
     }
   }
 
-  public function add(Request $request) {
+  public function add(Request $request, $entityId) {
     try {
+      $user = auth()->user();
       $validatedData = $request->validate([
         'price' => 'required|integer',
         'entrance_number' => 'required|integer',
@@ -66,7 +67,6 @@ class AppartmentController extends Controller
         'kitchen_area' => 'required|integer',
         'repair_type' => 'required|string|max:30',
         'type_id' => 'required|integer',
-        'entity_id' => 'required|integer',
       ]);
 
       $appartment = Appartment::create([
@@ -79,7 +79,8 @@ class AppartmentController extends Controller
         'kitchen_area' => $validatedData['kitchen_area'],
         'repair_type' => $validatedData['repair_type'],
         'type_id' => $validatedData['type_id'],
-        'entity_id' => $validatedData['entity_id'],
+        'entity_id' => $entityId,
+        'user_id' => $user->id,
       ]);
     
       return response()->json([
@@ -92,14 +93,20 @@ class AppartmentController extends Controller
     }
   }
 
-  public function update(Request $request, $appartmentId) {
+  public function update(Request $request, $entityId, $appartmentId) {
     try {
       $appartment = Appartment::where('id', $appartmentId)->first();
       if (!$appartment) {
         return response()->json([
           'message' => "Квартиры с таким ID не существует"
-        ]);
+        ], 404);
       }
+      // Дополнить или переделать
+			if (auth()->user()->id !== $appartment->user_id || auth()->user()->role->value !== 'ADMIN') {
+				return response()->json([
+					'message' => 'У вас нет прав на обновление данных квартиры'
+				], 400);
+			}
 
       $validatedData = $request->validate([
         'price' => 'required|integer',
@@ -111,7 +118,8 @@ class AppartmentController extends Controller
         'kitchen_area' => 'required|integer',
         'repair_type' => 'required|string|max:30',
         'type_id' => 'required|integer',
-        'entity_id' => 'required|integer',
+        'entity_id' => $entityId,
+        'user_id' => $user->id,
       ]);
       
       $appartment->update($validatedData);
@@ -131,8 +139,14 @@ class AppartmentController extends Controller
       if (!$appartment) {
         return response()->json([
           'message' => "Квартиры с таким ID  не существует"
-        ]);
+        ], 404);
       }
+      // Дополнить или переделать
+			if (auth()->user()->id !== $appartment->user_id || auth()->user()->role->value !== 'ADMIN') {
+				return response()->json([
+					'message' => 'У вас нет прав на удаление квартиры'
+				], 400);
+			}
       $appartment->delete();
       return response()->json([
         'message' => 'Квартира успешно удалена'

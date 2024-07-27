@@ -9,11 +9,12 @@ class EntityController extends Controller
 {
   public function index() {
     try {
-      $entities = Entity::orderBy('city, street, house', 'asc')->get(); // или User::all()
+      $entities = Entity::all(); // или User::all()
       return response()->json([
         'entities' => $entities
       ]);
     } catch (\Throwable $th) {
+      echo $th;
       return response()->json([
         'message' => 'Не удалось получить список объектов',
       ], 500);
@@ -53,14 +54,15 @@ class EntityController extends Controller
     }
   }
 
-  public function add(Request $request) {
+  public function add(Request $request, $projectId) {
     try {
+      $user = auth()->user();
       $validatedData = $request->validate([
         'city' => 'required|string|max:30',
-        'street' => 'required|string|min:30',
+        'street' => 'required|string|max:30',
         'house' => 'required|string|max:5',
         'floors_number' => 'required|integer|max:50',
-        'entrances_number' => 'required|integer|max:50'
+        'entrances_number' => 'required|integer|max:50',
       ]);
 
       $entity = Entity::create([
@@ -69,6 +71,8 @@ class EntityController extends Controller
         'house' => $validatedData['house'],
         'floors_number' => $validatedData['floors_number'],
         'entrances_number' => $validatedData['entrances_number'],
+        'project_id' => $projectId,
+        'user_id' => $user->id,
       ]);
     
       return response()->json([
@@ -81,21 +85,30 @@ class EntityController extends Controller
     }
   }
 
-  public function update(Request $request, $entityId) {
+  public function update(Request $request, $projectId, $entityId) {
     try {
+      $user = auth()->user();
       $entity = Entity::where('id', $entityId)->first();
       if (!$entity) {
         return response()->json([
           'message' => "Объекта с таким ID не существует"
-        ]);
+        ], 404);
       }
+      // Дополнить или переделать
+			if (auth()->user()->id !== $entity->user_id || auth()->user()->role->value !== 'ADMIN') {
+				return response()->json([
+					'message' => 'У вас нет прав на обновление данных объекта'
+				], 400);
+			}
 
       $validatedData = $request->validate([
         'city' => 'required|string|max:30',
         'street' => 'required|string|min:30',
         'house' => 'required|string|max:5',
         'floors_number' => 'required|integer|max:50',
-        'entrances_number' => 'required|integer|max:50'
+        'entrances_number' => 'required|integer|max:50',
+        'project_id' => $projectId,
+        'user_id' => $user->id,
       ]);
       
       $entity->update($validatedData);
@@ -115,8 +128,14 @@ class EntityController extends Controller
       if (!$entity) {
         return response()->json([
           'message' => "Объекта с таким ID  не существует"
-        ]);
+        ], 404);
       }
+      // Дополнить или переделать
+			if (auth()->user()->company->id !== $entity->project->company->id || auth()->user()->role->value !== 'ADMIN') {
+				return response()->json([
+					'message' => 'У вас нет прав на удаление объекта'
+				], 400);
+			}
       $entity->delete();
       return response()->json([
         'message' => 'Объект успешно удален'

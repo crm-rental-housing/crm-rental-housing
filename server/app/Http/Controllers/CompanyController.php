@@ -73,10 +73,10 @@ class CompanyController extends Controller
 				], 404);
 			}
 			// Дополнить или переделать
-			if (auth()->user()->company->id !== $companyId) {
+			if (auth()->user()->company->id !== $companyId || auth()->user()->role->value !== 'ADMIN') {
 				return response()->json([
 					'message' => 'У вас нет прав на обновление данных компании'
-				]);
+				], 400);
 			}
 			$validatedData = $request->validate([
 				'name' => ['required', 'string', 'min:4', 'max:30', Rule::unique('companies')->ignore($company->id)],
@@ -103,6 +103,12 @@ class CompanyController extends Controller
 				return response()->json([
 					'message' => 'Компаниии с таким ID не существует'
 				], 404);
+			}
+			// Дополнить или переделать
+			if (auth()->user()->company->id !== $companyId || auth()->user()->role->value !== 'ADMIN') {
+				return response()->json([
+					'message' => 'У вас нет прав на удаление компании'
+				], 400);
 			}
 			$company->delete();
 			return response()->json([

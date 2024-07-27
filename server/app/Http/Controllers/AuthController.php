@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\RefreshToken;
+use App\Models\UserInfo;
 use App\Mail\EmailVerification;
 
 /**
@@ -31,8 +32,9 @@ class AuthController extends Controller
         'password' => Hash::make($validatedData['password']),
         'role_id' => 2, // ID роли пользователя
       ]);
+      UserInfo::create(['user_id' => $user->id]);
 
-      Mail::to($user->email)->send(new EmailVerification($user));
+      // Mail::to($user->email)->send(new EmailVerification($user));
     
       $accessToken = JWTAuth::fromUser($user);
       $refreshTokenCookie = $this->generateRefreshToken($user);
@@ -80,8 +82,7 @@ class AuthController extends Controller
       }
       RefreshToken::where('value', $refreshToken)->delete();
       auth()->logout();
-      return response()
-        ->json([
+      return response()->json([
         'message' => 'Вы успешно вышли из системы'
         ])
         ->withCookie(Cookie::forget('refresh_token'));

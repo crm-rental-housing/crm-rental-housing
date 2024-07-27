@@ -25,7 +25,7 @@ class EmailVerification extends Mailable
         return $this->markdown('verify')
                     ->with([
                         'name' => $this->user->name,
-                        'verification_utl' => url('/verify_email?token=')
+                        'verification_url' => url('/verify_email?token=')
                     ]);
     }
 

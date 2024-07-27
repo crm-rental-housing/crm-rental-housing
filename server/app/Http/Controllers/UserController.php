@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\UserInfo;
 
 class UserController extends Controller
 {
+  // переделать
   public function index() {
     try {
       $users = User::orderBy('email', 'asc')->get(); // или User::all()
@@ -49,7 +51,8 @@ class UserController extends Controller
       $validatedData = $request->validate([
         'email' => 'required|string|email|unique:users',
         'password' => 'required|string|min:8',
-        'role' => 'required|string'
+        'role' => 'required|string',
+        'company_id' => 'nullable|string',
       ]);
 
       $role = Role::where('value', $validatedData['role'])->first();
@@ -63,7 +66,9 @@ class UserController extends Controller
         'email' => $validatedData['email'],
         'password' => Hash::make($validatedData['password']),
         'role_id' => $role->id,
+        'company_id' => $validatedData['company_id'],
       ]);
+      UserInfo::create(['user_id' => $user->id]);
     
       return response()->json([
         'message' => 'Пользователь успешно добавлен',
@@ -84,18 +89,36 @@ class UserController extends Controller
           'message' => 'Not found'
         ], 404);
       }
+      // Дополнить или переделать
+			if (auth()->user()->id !== $user->id || auth()->user()->role->value !== 'ADMIN') {
+				return response()->json([
+					'message' => 'У вас нет прав на обновление данных пользователя'
+				], 400);
+			}
+      $userInfo = UserInfo::where('user_id', $user->id)->first();
 
-      $validatedData = $request->validate([
+      $validatedUserData = $request->validate([
         'email' => ['required', 'string', 'email', Rule::unique('users')->ignore($user->id)],
         'password' => ['required', 'string'],
       ]);
+      $validatedInfoData = $request->validate([
+        'username' => ['nullable', 'string', Rule::unique('user_infos')->ignore($userInfo->id)],
+        'first_name' => ['nullable', 'string'],
+        'middle_name' => ['nullable', 'string'],
+        'last_name' => ['nullable', 'string'],
+        'gender' => ['nullable', 'string'],
+        'birthdate' => ['nullable', 'string'],
+        'phone_number' => ['nullable', 'string'],
+        'user_id' => $userInfo->user_id,
+      ]);
 
-      $newData = [
-        'email' => $validatedData['email'],
-        'password' => Hash::make($validatedData['password']),
+      $newUserData = [
+        'email' => $validatedUserData['email'],
+        'password' => Hash::make($validatedUserData['password']),
       ];
       
       $user->update($newData);
+      $userInfo->update($validatedInfoData);
       return response()->json([
         'message' => 'Данные пользователя успешно обновлены'
       ]);
@@ -114,7 +137,11 @@ class UserController extends Controller
           'message' => "Пользователя с ID '$userId' не существует"
         ], 404);
       }
+      $userInfo = UserInfo::where('user_id', $user->id);
+
+      $userInfo->delete();
       $user->delete();
+      
       return response()->json([
         'message' => 'Пользователь успешно удален'
       ]); 
@@ -131,10 +158,11 @@ class UserController extends Controller
       return response()->json([
         'data' => [
           'user' => [
-            'email' => $user['email'],
-            'info' => $user->info
-          ]
-        ],
+            'email' => $user->email,
+            'info' => $user->info,
+            'company_id' => $user->company_id,
+          ],
+        ]
       ]);
     } catch (\Throwable $th) {
       return response()->json([

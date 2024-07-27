@@ -37,12 +37,9 @@ Route::prefix('auth')->group(function() {
 /**
  * Доступ авторизованным пользователям
  */
-Route::middleware('auth:api')->group(function() {
+Route::middleware(['auth:api', 'ban'])->group(function() {
   Route::get('users/me', [UserController::class, 'me']);
   Route::put('users/{userId}', [UserController::class, 'update']);
-
-  // Перенести в UserController из UserInfoController
-  Route::put('users/{userId}/info', [UserInfoController::class, 'update']);
 
   Route::get('companies', [CompanyController::class, 'index']);
   Route::get('companies/{companyId}', [CompanyController::class, 'getOne']);
@@ -77,11 +74,6 @@ Route::middleware(['auth:api', 'role:ADMIN MANAGER SUPERUSER'])->group(function(
   Route::post('add_company_admin', [UserController::class, 'add'])->middleware('add_role:COMPANY_ADMIN');
   Route::put('users/{userId}', [UserController::class, 'update']);
 
-  Route::prefix('users/{userId}')->group(function () {
-    Route::get('info', [RoleController::class, 'index']);
-    Route::post('info', [RoleController::class, 'add']);
-  });
-
   Route::post('companies', [CompanyController::class, 'add']);
   Route::put('companies/{companyId}', [CompanyController::class, 'update']);
 
@@ -93,7 +85,7 @@ Route::middleware(['auth:api', 'role:ADMIN MANAGER SUPERUSER'])->group(function(
 /**
  * Доступ администраторам системы, SU
  */
-Route::middleware(['auth', 'role:ADMIN SUPERUSER'])->group(function() {
+Route::middleware(['auth:api', 'role:ADMIN SUPERUSER'])->group(function() {
   Route::post('add_manager', [UserController::class, 'add'])->middleware('add_role:MANAGER');
 });
 
@@ -101,7 +93,7 @@ Route::middleware(['auth', 'role:ADMIN SUPERUSER'])->group(function() {
  * Доступ застройщикам (администраторам)
  * role:COMPANY_ADMIN - пока такое название роли, потом можно поменять
  */
-Route::middleware(['auth, role:COMPANY_ADMIN'])->group(function() {
+Route::middleware(['auth:api', 'role:COMPANY_ADMIN'])->group(function() {
   Route::post('add_company_manager', [UserController::class, 'add'])->middleware('add_role:COMPANY_MANAGER');
 
   Route::delete('projects/{projectId}', [ProjectController::class, 'delete']);
@@ -111,36 +103,36 @@ Route::middleware(['auth, role:COMPANY_ADMIN'])->group(function() {
  * Доступ застройщикам (администраторам, менеджерам)
  * role:COMPANY_MANAGER - пока такое название роли, потом можно поменять
  */
-Route::middleware(['auth, role:COMPANY_MANAGER COMPANY_ADMIN'])->group(function() {
+Route::middleware(['auth:api', 'role:COMPANY_MANAGER COMPANY_ADMIN'])->group(function() {
   Route::post('projects', [ProjectController::class, 'add']);
   Route::put('projects/{projectId}', [ProjectController::class, 'update']);
 
-  /**
-   * Не доделано
-   * НУЖНО ДОБАВИТЬ ЗАГРУЗКУ ФАЙЛОВ ИЗОБРАЖЕНИЙ НА СЕРВЕР
-   */
-  Route::prefix('projects/{projectId}')->group(function() {
-    Route::post('images', [ProjectImageController::class, 'add']);
-    Route::delete('images/{imageId}', [ProjectImageController::class, 'delete']);
-  });
+  // /**
+  //  * Не доделано
+  //  * НУЖНО ДОБАВИТЬ ЗАГРУЗКУ ФАЙЛОВ ИЗОБРАЖЕНИЙ НА СЕРВЕР
+  //  */
+  // Route::prefix('projects/{projectId}')->group(function() {
+  //   Route::post('images', [ProjectImageController::class, 'add']);
+  //   Route::delete('images/{imageId}', [ProjectImageController::class, 'delete']);
+  // });
 
-  Route::post('entities', [EntityController::class, 'add']);
-  Route::put('entities/{entityId}', [EntityController::class, 'update']);
+  Route::post('projects/{projectId}/entities', [EntityController::class, 'add']);
+  Route::put('projects/{projectId}/entities/{entityId}', [EntityController::class, 'update']);
   Route::delete('entities/{entityId}', [EntityController::class, 'delete']);
 
   /**
    * Надо написать парсер google sheets, для этого нужно создать сервисный аккаунт в google cloud platform
    * Напишу, если успею
    */
-  Route::post('appartments', [AppartmentController::class, 'add']);
-  Route::put('appartments/{appartmentId}', [AppartmentController::class, 'update']);
+  Route::post('entities/{entityId}/appartments', [AppartmentController::class, 'add']);
+  Route::put('entities/{entityId}/appartments/{appartmentId}', [AppartmentController::class, 'update']);
   Route::delete('appartments/{appartmentId}', [AppartmentController::class, 'delete']);
 });
 
 /**
- * Доступ только SU
+ * Доступ только SU, ADMIN
  */
-Route::middleware('auth:api, role:SUPERUSER')->group(function () {
+Route::middleware(['auth:api', 'role:SUPERUSER ADMIN'])->group(function () {
   Route::post('users', [UserController::class, 'add']);
   Route::delete('users/{userId}', [UserController::class, 'delete']);
   Route::put('users/{userId}/changeRole', [UserController::class, 'changeRole']);

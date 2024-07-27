@@ -20,10 +20,15 @@ class Appartment extends Model
     'repair_type',
     'type_id',
     'entity_id',
+    'user_id',
   ];
 
   public function entity(): HasOne {
     return $this->hasOne(Entity::class);
+  }
+
+  public function user(): HasOne {
+    return $this->hasOne(User::class);
   }
 
   public function type(): HasOne {

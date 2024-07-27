@@ -15,11 +15,17 @@ class Entity extends Model
     'house',
     'project_id',
     'floors_number',
-    'entrances_number'
+    'entrances_number',
+    'project_id',
+    'user_id',
   ];
 
   public function project(): HasOne {
     return $this->hasOne(Project::class);
+  }
+
+  public function user(): HasOne {
+    return $this->hasOne(User::class);
   }
 
   public function appartments(): BelongsTo {
