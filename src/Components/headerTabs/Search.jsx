@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 // import '../Styles/HomePage.css'; 
+
 export default class Search extends Component {
     handleEditInfo = () => {
         console.log("Редактировать информацию");
