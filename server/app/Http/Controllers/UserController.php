@@ -12,38 +12,42 @@ class UserController extends Controller
 {
   // переделать
   public function index() {
-    try {
-      $users = User::orderBy('email', 'asc')->get(); // или User::all()
+    $users = User::orderBy('email', 'asc')->get(); // или User::all()
+    if (count($users) == 0) {
       return response()->json([
-        'users' => $users
-      ]);
-    } catch (\Throwable $th) {
-      return response()->json([
-        'message' => 'Не удалось получить пользователей',
-      ], 400);
+        'message' => 'Пользователи не найдены'
+      ], 404);
     }
+    $formattedUsers = $users->map(function ($user) {
+      return [
+        'email' => $user->email,
+        'role' => $user->role ? $user->role->value : null,
+        'company' => $user->company ? $user->company->name : null,
+        'info' => $user->info,
+        'is_banned' => $user->ban ? $user->ban->is_banned : null,
+      ];
+    });
+    return response()->json([
+      'users' => $formattedUsers
+    ]);
   }
 
   public function getOne($userId) {
-    try {
-      $user = User::where('id', $userId)->first();
-      if (!$user) {
-        return response()->json([
-          'message' => 'Not found'
-        ], 404);
-      }
+    $user = User::where('id', $userId)->first();
+    if (!$user) {
       return response()->json([
-        'user' => [
-          'email' => $user->email,
-          'info' => $user->info,
-          'role' => $user->role->value,
-        ]
-      ]);
-    } catch (\Throwable $th) {
-      return response()->json([
-        'message' => 'Не удалось получить данные пользователя',
-      ], 400);
+        'message' => 'Not found'
+      ], 404);
     }
+    return response()->json([
+      'user' => [
+        'email' => $user->email,
+        'role' => $user->role ? $user->role->value : null,
+        'company' => $user->company ? $user->company->name : null,
+        'info' => $user->info,
+        'is_banned' => $user->ban ? $user->ban->is_banned : null,
+      ]
+    ]);
   }
 
   public function add(Request $request) {
@@ -153,22 +157,16 @@ class UserController extends Controller
   }
 
   public function me() {
-    try {
-      $user = auth()->user();
-      return response()->json([
-        'data' => [
-          'user' => [
-            'email' => $user->email,
-            'info' => $user->info,
-            'company_id' => $user->company_id,
-          ],
-        ]
-      ]);
-    } catch (\Throwable $th) {
-      return response()->json([
-        'message' => 'Произошла ошибка',
-      ], 400);
-    }
+    $user = auth()->user();
+    return response()->json([
+      'user' => [
+        'email' => $user->email,
+        'role' => $user->role ? $user->role->value : null,
+        'company' => $user->company ? $user->company->name : null,
+        'info' => $user->info,
+        'is_banned' => $user->ban ? $user->ban->is_banned : null,
+      ]
+    ]);
   }
 
   public function changeRole(Request $request, $userId) {

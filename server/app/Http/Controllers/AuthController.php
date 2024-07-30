@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -16,116 +17,116 @@ use App\Models\UserInfo;
 use App\Mail\EmailVerification;
 
 /**
- * НУЖНО ДОБАВИТЬ ПРОВЕРКУ НА ОПРЕДЕЛЕННОЕ КОЛ-ВО ОДНОВРЕМЕННЫХ СЕССИЙ
+ * ДОБАВИТЬ ПОДТВЕРЖДЕНИЕ ПОЧТЫ (ВОЗМОЖНО, ДОБАВИТЬ ПОДТВЕРЖДЕНИЕ НОМЕРА ТЕЛЕФОНА)
  */
+
 class AuthController extends Controller
 {
   public function register(Request $request) {
-    try {
-      $validatedData = $request->validate([
-        'email' => 'required|string|max:50|unique:users',
-        'password' => 'required|string|min:8'
-      ]);
+    $validatedData = Validator::make($request->all(), [
+      'email' => 'required|string|unique:users',
+      'password' => 'required|string|min:8'
+    ]);
 
-      $user = User::create([
-        'email' => $validatedData['email'],
-        'password' => Hash::make($validatedData['password']),
-        'role_id' => 2, // ID роли пользователя
-      ]);
-      UserInfo::create(['user_id' => $user->id]);
-
-      // Mail::to($user->email)->send(new EmailVerification($user));
-    
-      $accessToken = JWTAuth::fromUser($user);
-      $refreshTokenCookie = $this->generateRefreshToken($user);
-    
-      return $this->respondWithTokens($accessToken, $refreshTokenCookie);
-    } catch (\Throwable $th) {
-      echo $th;
+    if ($validatedData->fails()) {
       return response()->json([
-        'message' => 'Не удалось зарегистрироваться',
+        'message' => 'Некорректный ввод, возможно данный email уже занят'
       ], 400);
     }
+
+    $role = Role::where('value', 'USER')->first();
+
+    $user = User::create([
+      'email' => $request['email'],
+      'password' => Hash::make($request['password']),
+      'role_id' => $role->id, // ID роли пользователя
+    ]);
+    UserInfo::create(['user_id' => $user->id]);
+
+    // Mail::to($user->email)->send(new EmailVerification($user));
+    
+    $accessToken = JWTAuth::fromUser($user);
+    $refreshToken = $this->generateRefreshToken($user);
+    
+    return $this->respondWithTokens($accessToken, $refreshToken);
   }
 
   public function login(Request $request) {
-    try {
-      $validatedData = $request->validate([
-        'email' => 'required|string',
-        'password' => 'required|string'
-      ]);
-
-      $user = User::where('email', $validatedData['email'])->first();
-      if (!$user || !Hash::check($validatedData['password'], $user->password)) {
-        return response()->json([
-          'message' => 'Неверное имя пользователя или пароль'
-        ], 400);
-      }
-      $accessToken = JWTAuth::fromUser($user);
-      $refreshTokenCookie = $this->generateRefreshToken($user);
-
-      return $this->respondWithTokens($accessToken, $refreshTokenCookie);
-    } catch (\Throwable $th) {
+    $validatedData = Validator::make($request->all(), [
+      'email' => 'required|string|email',
+      'password' => 'required|string'
+    ]);
+    if ($validatedData->fails()) {
       return response()->json([
-        'message' => 'Не удалось войти',
+        'message' => 'Некорректный ввод',
       ], 400);
     }
+
+    $user = User::where('email', $request['email'])->first();
+    if (!$user || !Hash::check($request['password'], $user->password)) {
+      return response()->json([
+        'message' => 'Неверное имя пользователя или пароль'
+      ], 400);
+    }
+    if (count(RefreshToken::where('user_id', $user->id)->get()) >= 5) {
+      return response()->json([
+        'message' => 'Вы пытаетесь авторизоваться с более чем 5 устройств',
+      ], 400);
+    }
+    $accessToken = JWTAuth::fromUser($user);
+    $refreshToken = $this->generateRefreshToken($user);
+    return $this->respondWithTokens($accessToken, $refreshToken);
   }
 
   public function logout(Request $request) {
-    try {
-      $refreshToken = $request->cookie('refresh_token');
-      if (!$refreshToken) {
-        return response()->json([
-          'message' => 'Refresh token not provided'
-        ], 400);
-      }
-      RefreshToken::where('value', $refreshToken)->delete();
-      auth()->logout();
+    $refreshToken = $request->only('refresh_token');
+    if (!$refreshToken) {
       return response()->json([
-        'message' => 'Вы успешно вышли из системы'
-        ])
-        ->withCookie(Cookie::forget('refresh_token'));
-    } catch (\Throwable $th) {
-      return response()->json([
-        'message' => 'Не удалось выйти',
-      ], 500);
+        'message' => 'Refresh token not provided'
+      ], 404);
     }
+    RefreshToken::where('value', $refreshToken)->delete();
+    auth()->logout();
+    return response()->json([
+      'message' => 'Вы успешно вышли из системы'
+    ]);
   }
 
-  // Добавь проверку на время жизни refresh token
   public function refresh(Request $request) {
-    try {
-      $requestRefreshToken = $request->cookie('refresh_token');
-      if (!$requestRefreshToken) {
-        return response()->json([
-          'message' => 'Refresh token not provided'
-        ]);
-      }
-      RefreshToken::where('value', $requestRefreshToken)->delete();
-      $user = auth()->user();
-      $refreshTokenCookie = $this->generateRefreshToken($user);
-      $newAccessToken = JWTAuth::fromUser($user);
-      return $this->respondWithTokens($newAccessToken, $refreshTokenCookie);
-    } catch (\Throwable $th) {
+    $requestRefreshToken = $request->only('refresh_token');
+    if (!$requestRefreshToken) {
       return response()->json([
-        'message' => 'Произошла ошибка',
-      ], 400);
+        'message' => 'Refresh token not provided'
+      ], 404);
     }
+    $refreshToken = RefreshToken::where('value', $requestRefreshToken)
+      ->where('expires_in', '>', now())
+      ->first();
+    if (!$refreshToken) {
+      $refreshToken->delete();
+      return response()->json([
+        'message' => 'Авторизуйтесь заново',
+      ], 404); 
+    }
+    $user = User::where('id', $refreshToken->user_id)->first();
+    $newRefreshToken = $this->generateRefreshToken($user);
+    $newAccessToken = JWTAuth::fromUser($user);
+    return $this->respondWithTokens($newAccessToken, $newRefreshToken);
   }
 
   protected function respondWithTokens($accessToken, $refreshToken) {
     return response()
       ->json([
-        'data' => [
-          'access_token' => [
-            'token' => $accessToken,
-            'type' => 'Bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-          ],
+        'access_token' => [
+          'token' => $accessToken,
+          'type' => 'Bearer',
+          'expires_in' => auth()->factory()->getTTL() * 60,
         ],
-      ])
-      ->withCookie($refreshToken);
+        'refresh_token' => [
+          'token' => $refreshToken[0],
+          'expires_in' => $refreshToken[1],
+        ]
+      ]);
   }
 
   protected function generateRefreshToken($user) {
@@ -133,23 +134,24 @@ class AuthController extends Controller
     $expiresIn = now()->addDays(10);
     $expiresInSeconds = $expiresIn->timestamp;
 
+    $token = [$refreshToken, $expiresInSeconds];
     $refreshTokenModel = RefreshToken::create([
       'value' => $refreshToken,
       'expires_in' => $expiresIn,
       'user_id' => $user->id,
     ]);
 
-    $refreshTokenCookie = Cookie::make(
-      'refresh_token', // Название
-      $refreshToken, // Значение
-      $expiresInSeconds, // Время жизни в секундах
-      '/', // Путь
-      '', // Домен
-      false, // Secure (true для HTTPS)
-      true, // httpOnly
-      'strict' // SameSite
-    );
+    // $refreshTokenCookie = Cookie::make(
+    //   'refresh_token', // Название
+    //   $refreshToken, // Значение
+    //   $expiresInSeconds, // Время жизни в секундах
+    //   '/', // Путь
+    //   'localhost', // Домен
+    //   false, // Secure (true для HTTPS)
+    //   false, // httpOnly
+    //   'Lax' // SameSite
+    // );
 
-    return $refreshTokenCookie;
+    return $token;
   }
 }

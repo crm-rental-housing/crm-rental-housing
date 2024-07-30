@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('email')->unique();
             $table->string('password');
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('email_remember_token')->nullable();
             $table->unsignedBigInteger('role_id');
             $table->foreign('role_id')
                 ->references('id')->on('roles')

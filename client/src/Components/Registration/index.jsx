@@ -2,18 +2,18 @@ import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
 const Registration = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
     <div className="login">
       <h2 className="login__title">Регистрация</h2>
-      <label className="login__label">Имя пользователя</label>
+      <label className="login__label">Адрес электронной почты</label>
       <input
         className="login__input"
         type="text"
-        value={username}
+        value={email}
         placeholder="Введите имя пользователя"
-        onChange={(e) => setUsername(e.target.value)}
+        onChange={(e) => setEmail(e.target.value)}
       />
       <label className="login__label">Пароль</label>
       <input
