@@ -16,10 +16,6 @@ use App\Models\RefreshToken;
 use App\Models\UserInfo;
 use App\Mail\EmailVerification;
 
-/**
- * ДОБАВИТЬ ПОДТВЕРЖДЕНИЕ ПОЧТЫ (ВОЗМОЖНО, ДОБАВИТЬ ПОДТВЕРЖДЕНИЕ НОМЕРА ТЕЛЕФОНА)
- */
-
 class AuthController extends Controller
 {
   public function register(Request $request) {
@@ -35,16 +31,16 @@ class AuthController extends Controller
     }
 
     $role = Role::where('value', 'USER')->first();
-
+    
+    $email_remember_token  = bin2hex(random_bytes(16));
     $user = User::create([
       'email' => $request['email'],
       'password' => Hash::make($request['password']),
       'role_id' => $role->id, // ID роли пользователя
+      'email_remember_token' => $email_remember_token,
     ]);
     UserInfo::create(['user_id' => $user->id]);
-
-    // Mail::to($user->email)->send(new EmailVerification($user));
-    
+    // Mail::to($user->email)->send(new EmailVerification($user, $email_remember_token));
     $accessToken = JWTAuth::fromUser($user);
     $refreshToken = $this->generateRefreshToken($user);
     
@@ -68,9 +64,10 @@ class AuthController extends Controller
         'message' => 'Неверное имя пользователя или пароль'
       ], 400);
     }
-    if (count(RefreshToken::where('user_id', $user->id)->get()) >= 5) {
+    $devices_count = 5;
+    if (count(RefreshToken::where('user_id', $user->id)->get()) >= $devices_count) {
       return response()->json([
-        'message' => 'Вы пытаетесь авторизоваться с более чем 5 устройств',
+        'message' => "Вы пытаетесь авторизоваться с более чем 5 устройств",
       ], 400);
     }
     $accessToken = JWTAuth::fromUser($user);
@@ -79,7 +76,7 @@ class AuthController extends Controller
   }
 
   public function logout(Request $request) {
-    $refreshToken = $request->only('refresh_token');
+    $refreshToken = $request->cookie('refresh_token');
     if (!$refreshToken) {
       return response()->json([
         'message' => 'Refresh token not provided'
@@ -89,11 +86,11 @@ class AuthController extends Controller
     auth()->logout();
     return response()->json([
       'message' => 'Вы успешно вышли из системы'
-    ]);
+    ])->withCookie(cookie()->forget('refresh_token'));
   }
 
   public function refresh(Request $request) {
-    $requestRefreshToken = $request->only('refresh_token');
+    $requestRefreshToken = $request->cookie('refresh_token');
     if (!$requestRefreshToken) {
       return response()->json([
         'message' => 'Refresh token not provided'
@@ -106,7 +103,7 @@ class AuthController extends Controller
       $refreshToken->delete();
       return response()->json([
         'message' => 'Авторизуйтесь заново',
-      ], 404); 
+      ], 404)->withCookie(cookie()->forget('refresh_token')); 
     }
     $user = User::where('id', $refreshToken->user_id)->first();
     $newRefreshToken = $this->generateRefreshToken($user);
@@ -122,11 +119,7 @@ class AuthController extends Controller
           'type' => 'Bearer',
           'expires_in' => auth()->factory()->getTTL() * 60,
         ],
-        'refresh_token' => [
-          'token' => $refreshToken[0],
-          'expires_in' => $refreshToken[1],
-        ]
-      ]);
+      ])->withCookie($refreshToken);
   }
 
   protected function generateRefreshToken($user) {
@@ -141,17 +134,41 @@ class AuthController extends Controller
       'user_id' => $user->id,
     ]);
 
-    // $refreshTokenCookie = Cookie::make(
-    //   'refresh_token', // Название
-    //   $refreshToken, // Значение
-    //   $expiresInSeconds, // Время жизни в секундах
-    //   '/', // Путь
-    //   'localhost', // Домен
-    //   false, // Secure (true для HTTPS)
-    //   false, // httpOnly
-    //   'Lax' // SameSite
-    // );
+    $refreshTokenCookie = Cookie::make(
+      'refresh_token', // Название
+      $refreshToken, // Значение
+      $expiresInSeconds, // Время жизни в секундах
+      '/', // Путь
+      'localhost', // Домен
+      false, // Secure (true для HTTPS)
+      true, // httpOnly
+      'Lax' // SameSite
+    );
 
-    return $token;
+    return $refreshTokenCookie;
+  }
+
+  public function verifyEmail(Request $request) {
+    $token = $request->query('token');
+    $user = User::where('email_remember_token', $token)->first();
+    if (!$user) {
+      return response()->json([
+        'message' => 'Token is missing'
+      ], 404);
+    }
+
+    if ($user->email_verified_at) {
+      return response()->json([
+        'message' => 'Адрес электронной почты уже подтвержден'
+      ], 400);
+    }
+
+    $user->email_verified_at = now();
+    $user->email_remember_token = null;
+    $user->save();
+
+    return response()->json([
+      'message' => 'Адрес электронной почты успешно подтвержден'
+    ]);
   }
 }

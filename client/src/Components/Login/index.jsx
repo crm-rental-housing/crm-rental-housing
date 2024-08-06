@@ -1,23 +1,18 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-import { login } from "../../api/auth";
-import { setToken } from "../../token";
+import { loginAction } from "../../api/actions/auth";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = await login(email, password);
-    const token = data.access_token.token;
-    if (token) {
-      setToken(token);
-      navigate("/home");
-    }
+    await dispatch(loginAction(email, password));
   };
 
   return (

@@ -1,9 +1,18 @@
 import React, { useState } from "react";
+import { useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
+import { registrationAction } from "../../api/actions/auth";
 
 const Registration = () => {
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    await dispatch(registrationAction(email, password));
+  };
   return (
     <div className="login">
       <h2 className="login__title">Регистрация</h2>
@@ -23,7 +32,9 @@ const Registration = () => {
         placeholder="Введите пароль"
         onChange={(e) => setPassword(e.target.value)}
       />
-      <button className="login__btn">Зарегистрироваться</button>
+      <button className="login__btn" onClick={handleSubmit}>
+        Зарегистрироваться
+      </button>
       <div className="login__redirect">
         <span>Уже есть аккаунт? </span>
         <NavLink to="/login">Войти</NavLink>

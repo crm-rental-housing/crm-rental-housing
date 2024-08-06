@@ -1,27 +1,15 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { logout } from "../../api/auth";
-import { getToken, removeToken } from "../../token";
+import { logoutAction } from "../../api/actions/auth";
+import { useDispatch, useSelector } from "react-redux";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const isAuth = useSelector((state) => state.auth.isAuth);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    removeToken();
-    await logout();
-  };
-
-  const AuthRoute = ({ element }) => {
-    const token = getToken();
-    if (token) {
-      return element;
-    }
-  };
-
-  const NotAuthRoute = ({ element }) => {
-    const token = getToken();
-    if (!token) {
-      return element;
-    }
+    await dispatch(logoutAction());
   };
 
   return (
@@ -44,31 +32,26 @@ const Navbar = () => {
             Связь с нами
           </NavLink>
 
-          <AuthRoute
-            element={
-              <>
-                <NavLink to="/favorite" className="navbar__item">
-                  <div>Избранное</div>
-                </NavLink>
-                <NavLink to="/notifications" className="navbar__item">
-                  <div>Уведомления</div>
-                </NavLink>
-                <button onClick={handleSubmit}>Выйти</button>
-              </>
-            }
-          />
-          <NotAuthRoute
-            element={
-              <>
-                <NavLink to="/login" className="navbar__item">
-                  <div>Войти</div>
-                </NavLink>
-                <NavLink to="/registration" className="navbar__user">
-                  <div>Регистрация</div>
-                </NavLink>
-              </>
-            }
-          />
+          {isAuth ? (
+            <>
+              <NavLink to="/favorite" className="navbar__item">
+                <div>Избранное</div>
+              </NavLink>
+              <NavLink to="/notifications" className="navbar__item">
+                <div>Уведомления</div>
+              </NavLink>
+              <button onClick={handleSubmit}>Выйти</button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login" className="navbar__item">
+                <div>Войти</div>
+              </NavLink>
+              <NavLink to="/registration" className="navbar__user">
+                <div>Регистрация</div>
+              </NavLink>
+            </>
+          )}
         </div>
       </div>
     </header>

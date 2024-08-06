@@ -14,10 +14,12 @@ class EmailVerification extends Mailable
     use Queueable, SerializesModels;
 
     public $user;
+    public $token;
 
-    public function __construct($user)
+    public function __construct($user, $token)
     {
         $this->user = $user;
+        $this->token = $token;
     }
 
     public function build()
@@ -25,7 +27,7 @@ class EmailVerification extends Mailable
         return $this->markdown('verify')
                     ->with([
                         'name' => $this->user->name,
-                        'verification_url' => url('/verify_email?token=')
+                        'verification_url' => url('/verify_email?token='. $this->token),
                     ]);
     }
 

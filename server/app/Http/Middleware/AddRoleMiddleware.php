@@ -16,19 +16,13 @@ class AddRoleMiddleware
    */
   public function handle(Request $request, Closure $next, $role_name): Response
   {
-    try {
-      $role = Role::where('value', $role_name)->first();
-      if (!$role) {
-        return response()->json([
-          'message' => 'Нет такой роли'
-        ], 400);
-      }
-      $request->merge(['role' => $role->value]);
-      return $next($request);
-    } catch (\Throwable $th) {
+    $role = Role::where('value', $role_name)->first();
+    if (!$role) {
       return response()->json([
-        'message' => 'Произошла ошибка на сервере'
-      ], 500);
-    }    
+        'message' => 'Нет такой роли'
+      ], 404);
+    }
+    $request->merge(['role' => $role->value]);
+    return $next($request);   
   }
 }

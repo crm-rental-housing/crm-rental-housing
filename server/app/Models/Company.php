@@ -16,7 +16,7 @@ class Company extends Model
         'phone_number',
     ];
 
-    public function users(): HasMany {
+    public function user(): HasMany {
         return $this->hasOne(User::class);
     }
 

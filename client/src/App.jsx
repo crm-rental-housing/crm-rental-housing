@@ -1,41 +1,55 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-
-import { getToken } from "./token";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 
 import Navbar from "./Components/Navbar";
 import Login from "./Components/Login";
 import Registration from "./Components/Registration";
+import Main from "./Components/Main";
 import Home from "./Components/Home";
+import Admin from "./Components/Admin";
+
+import { refreshAction } from "./api/actions/auth";
+import { getToken } from "./token";
 
 function App() {
-  const AuthRoute = ({ element }) => {
-    const token = getToken();
-    if (token) {
-      return element;
-    }
-    return <Navigate to="/login" />;
-  };
+  const isAuth = useSelector((state) => state.auth.isAuth);
+  const auth = useSelector((state) => state.auth.currentUser);
+  const dispatch = useDispatch();
 
-  const NotAuthRoute = ({ element }) => {
-    const token = getToken();
-    if (!token) {
-      return element;
+  useEffect(() => {
+    if (getToken()) {
+      dispatch(refreshAction());
     }
-    return <Navigate to="/home" />;
-  };
+  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
-        <Route path="/login" element={<NotAuthRoute element={<Login />} />} />
-        <Route
-          path="/registration"
-          element={<NotAuthRoute element={<Registration />} />}
-        />
-        <Route path="*" element={<NotAuthRoute element={<Login />} />} />
-
-        <Route path="/home" element={<AuthRoute element={<Home />} />} />
-        <Route path="*" element={<AuthRoute element={<Home />} />} />
+        <Route path="/main" element={<Main />} />
+        {isAuth ? (
+          <>
+            {auth.role === "USER" && (
+              <>
+                <Route path="/home" element={<Home />} />
+                <Route path="*" element={<Home />} />
+              </>
+            )}
+            {auth.role === "ADMIN" && (
+              <>
+                <Route path="/admin" element={<Admin />} />
+                <Route path="*" element={<Admin />} />
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            <Route path="/login" element={<Login />} />
+            <Route path="/registration" element={<Registration />} />
+            <Route path="*" element={<Login />} />
+          </>
+        )}
       </Routes>
     </BrowserRouter>
   );

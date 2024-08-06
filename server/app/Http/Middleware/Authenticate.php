@@ -9,17 +9,11 @@ class Authenticate
 {
   public function handle(Request $request, Closure $next)
   {
-		try {
-			if (!auth()->user()) {
-				return response()->json([
-					'message' => 'Вы не авторизованы'
-				], 401);
-			}
-			return $next($request);
-		} catch (\Throwable $th) {
+		if (!auth()->user()) {
 			return response()->json([
-				'message' => 'Произошла ошибка'
-			], 500);
+				'message' => 'Вы не авторизованы'
+			], 401);
 		}
+		return $next($request);
   }
 }
