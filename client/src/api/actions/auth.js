@@ -69,9 +69,6 @@ export const refreshAction = () => {
     try {
       const response = await axios.get(`${API_URL}/auth/refresh`, {
         withCredentials: true,
-        headers: {
-          Authorization: `Bearer ${getToken()}`,
-        },
       });
       const data = response.data;
       const token = data.access_token.token;

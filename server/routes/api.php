@@ -31,7 +31,7 @@ Route::prefix('auth')->group(function() {
   Route::post('register', [AuthController::class, 'register']);
   Route::post('login', [AuthController::class, 'login']);
   Route::get('logout', [AuthController::class, 'logout'])->middleware('auth:api');
-  Route::get('refresh', [AuthController::class, 'refresh'])->middleware('auth:api');
+  Route::get('refresh', [AuthController::class, 'refresh']);
   Route::get('verify_email', [AuthController::class, 'verifyEmail']);
 });
 
@@ -126,8 +126,10 @@ Route::middleware(['auth:api', 'role:COMPANY_MANAGER COMPANY_ADMIN'])->group(fun
    * Напишу, если успею
    */
   Route::post('entities/{entityId}/appartments', [AppartmentController::class, 'add']);
+  Route::post('entities/{entityId}/appartments/url', [AppartmentController::class, 'addAppartmentsWithUrl']);
   Route::put('entities/{entityId}/appartments/{appartmentId}', [AppartmentController::class, 'update']);
   Route::delete('appartments/{appartmentId}', [AppartmentController::class, 'delete']);
+  
 });
 
 /**

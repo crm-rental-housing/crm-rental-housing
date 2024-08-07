@@ -64,12 +64,12 @@ class AuthController extends Controller
         'message' => 'Неверное имя пользователя или пароль'
       ], 400);
     }
-    $devices_count = 5;
-    if (count(RefreshToken::where('user_id', $user->id)->get()) >= $devices_count) {
-      return response()->json([
-        'message' => "Вы пытаетесь авторизоваться с более чем 5 устройств",
-      ], 400);
-    }
+    // $devices_count = 10;
+    // if (count(RefreshToken::where('user_id', $user->id)->get()) >= $devices_count) {
+    //   return response()->json([
+    //     'message' => "Вы пытаетесь авторизоваться с более чем 10 устройств",
+    //   ], 400);
+    // }
     $accessToken = JWTAuth::fromUser($user);
     $refreshToken = $this->generateRefreshToken($user);
     return $this->respondWithTokens($accessToken, $refreshToken);

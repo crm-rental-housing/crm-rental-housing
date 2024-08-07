@@ -34,4 +34,8 @@ class Appartment extends Model
   public function type(): HasOne {
     return $this->hasOne(AppartmentType::class);
   }
+
+  public function deals(): BelongsTo {
+    return $this->belongsTo(Deal::class);
+  }
 }
