@@ -99,4 +99,9 @@ class User extends Authenticatable implements JWTSubject
     {
       return $this->belongsTo(BlackList::class);
     }
+
+    public function deals(): BelongsTo
+    {
+      return $this->belongsTo(Deal::class);
+    }
 }

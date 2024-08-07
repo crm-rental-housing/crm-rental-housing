@@ -1,24 +1,21 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { getUsersAction } from "../../api/actions/users";
+import { useSelector } from "react-redux";
+import { NavLink } from "react-router-dom";
 
 const Admin = () => {
   const auth = useSelector((state) => state.auth.currentUser);
-  const users = useSelector((state) => state.users.users);
-  const dispatch = useDispatch();
 
-  const showUsers = async (e) => {
-    e.preventDefault();
-    await dispatch(getUsersAction());
-    console.log(users);
-  };
   return (
     <div>
       <h1>Admin panel</h1>
       <div>{auth.email}</div>
       <div>{auth.role}</div>
-      <div>{auth.expiresIn}</div>
-      <button onClick={showUsers}>Список пользователей</button>
+      <NavLink to="/users">Пользователи</NavLink>
+      <NavLink to="/companies">Компании</NavLink>
+      <NavLink to="/projects">Проекты</NavLink>
+      <NavLink to="/entities">Объекты</NavLink>
+      <NavLink to="/appartments">Квартиры</NavLink>
+      <NavLink to="/managers">Менеджеры</NavLink>
     </div>
   );
 };

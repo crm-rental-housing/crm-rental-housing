@@ -18,4 +18,9 @@ class PaymentType extends Model
   {
     return $this->belongsTo(Project::class);
   }
+
+  public function deals(): BelongsTo
+  {
+    return $this->belongsTo(Deal::class);
+  }
 }

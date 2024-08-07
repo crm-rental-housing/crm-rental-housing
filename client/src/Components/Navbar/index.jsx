@@ -19,13 +19,19 @@ const Navbar = () => {
           <NavLink to="/main">LOGO</NavLink>
         </h2>
         <div className="navbar__menu">
-          <NavLink to="/main" className="navbar__item">
-            Главная
-          </NavLink>
+          {isAuth ? (
+            <>
+              <NavLink to="/">Главная</NavLink>
+            </>
+          ) : (
+            <>
+              <NavLink to="/main">Главная</NavLink>
+            </>
+          )}
           <NavLink to="/search" className="navbar__item">
             Поиск
           </NavLink>
-          <NavLink to="/property_builders" className="navbar__item">
+          <NavLink to="/companies" className="navbar__item">
             Застройщики
           </NavLink>
           <NavLink to="/contacts" className="navbar__item">

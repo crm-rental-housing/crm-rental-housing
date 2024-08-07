@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedInteger('price');
             $table->unsignedInteger('entrance_number');
             $table->unsignedInteger('floor_number');
-            $table->unsignedInteger('appartment_number');
+            $table->unsignedInteger('appartment_number')->unique();
             $table->unsignedInteger('rooms_number');
             $table->unsignedInteger('total_area');
             $table->unsignedInteger('kitchen_area');

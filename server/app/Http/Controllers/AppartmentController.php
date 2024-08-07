@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Models\Appartment;
+use App\Models\PaymentType;
 
 class AppartmentController extends Controller
 {
@@ -156,5 +158,83 @@ class AppartmentController extends Controller
         'message' => 'Не удалось удалить квартиру',
       ], 500);
     }
+  }
+
+  public function addAppartmentsWithUrl(Request $request, $entity_id) {
+    $validatedData=Validator::make($request->all(), [
+      'link' => ['required', 'string'],
+    ]);
+
+    if ($validatedData->fails()) {
+      return response()->json([
+        'message' => 'Ссылка не должна быть пустой'
+      ], 400);
+    }
+    $parsedUrl = parse_url($request['link']);
+
+    parse_str($parsedUrl['query'], $queryParams);
+
+    $gid = $queryParams['gid'];
+
+    $path = explode('/', $parsedUrl['path']);
+    $id = $path[3];
+
+    // Получаем CSV данные
+    $csv = file_get_contents("https://docs.google.com/spreadsheets/d/".$id."/export?format=csv&gid=".$gid);
+    $csv = explode("\r\n", $csv);
+
+    // Преобразуем CSV данные в массив
+    $array = array_map('str_getcsv', $csv);
+
+    $keys = $array[0];
+
+    $appartmentsList = [];
+
+    for ($i = 1; $i < count($array); $i++) {
+      $appartments = [];
+      for ($j = 0; $j < count($keys); $j++) {
+          if (isset($array[$i][$j])) {
+              $appartments[$keys[$j]] = $array[$i][$j];
+          } else {
+              $appartments[$keys[$j]] = null;
+          }
+      }
+      $appartmentsList[] = $appartments;
+    }
+
+    foreach ($appartmentsList as $appartment) {
+      $type_id=AppartmentType::where('value',$appartment['type'])->id;
+      $appartment_candidate = Appartment::where('appartment_number', $appartment['appartment_number'])->first();
+      if (!$type_id) {
+        continue;
+      }
+      if ($appartment_candidate) {
+        continue;
+      }
+
+      try {
+        $newAppartment = Appartment::create([
+          'price' => $appartment['price'],
+          'entrance_number' => $appartment['entrance_number'],
+          'floor_number' => $appartment['floor_number'],
+          'appartment_number' => $appartment['appartment_number'],
+          'rooms_number' => $appartment['rooms_number'],
+          'total_area' => $appartment['total_area'],
+          'kitchen_area' => $appartment['kitchen_area'],
+          'repair_type' => $appartment['repair_type'],
+          'type_id' => $type_id,
+          'entity_id' =>  $entity_id,
+          'user_id' => auth()->user()->id,
+          ]);
+      } catch (\Throwable $th) {
+        return response()->json([
+          'message' => 'Произошла ошибка при добавлении некоторых квартир'
+        ], 400);
+      }
+    }
+
+    return response()->json([
+      'message' => 'Квартиры были успешно добавлены',
+    ]); 
   }
 }
