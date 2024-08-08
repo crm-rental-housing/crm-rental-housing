@@ -1,0 +1,245 @@
+.companyName {
+  /* border: 1px solid gray; */
+}
+
+.title {
+  position: relative;
+  top: 10px;
+  left: 22%;
+  font-size: 50px;
+  color: #333; 
+}
+
+.description {
+  position: absolute;
+  /* width: 80%;  */
+  /* max-width: 600px;  */
+  /* border: 5px solid darkblue; */
+  height: 189px;
+  width: 709.04px;
+  margin: 0% auto; 
+  padding: 20px; 
+  right: 15%;
+  font-size: 18px; 
+  line-height: 1.5; 
+  color: #555; 
+}
+
+.contactInfo {
+  position: relative;
+  top: 20px;
+  font-size: 18px;
+  color: #999999;
+  left: 15%;
+}
+
+.battonEdit {
+  position: relative;
+  margin-bottom: 50px;
+  top: 40px;
+  left: 15%;
+  width: 450px;
+  background-color: #ffffff; /* Основной цвет кнопки */
+  border: 2px solid #000000; /* Цвет оконтовки кнопки */
+  color: rgb(67, 67, 67); /* Цвет текста кнопки */
+  font-size: 16px; /* Размер текста */
+  padding: 10px 20px; /* Отступы внутри кнопки */
+  transition: background-color 0.3s, border-color 0.3s; /* Плавный переход */
+}
+
+.battonEdit:hover {
+  background-color: #b6b6b6; /* Цвет кнопки при наведении */
+  border: 2px solid #000000; /* Цвет оконтовки при наведении */
+  color: rgb(0, 0, 0); /* Цвет текста кнопки */
+}
+
+.battonEdit:active {
+  background-color: #999999; /* Цвет кнопки при нажатии */
+  border: 2px solid #000000; /* Цвет оконтовки при нажатии */
+  color: rgb(0, 0, 0); /* Цвет текста кнопки при нажатии */
+}
+
+.battonEdit:focus {
+  outline: none; /* Убирает стандартное обрамление фокуса браузера */
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5); /* Добавляет эффект тени при фокусе */
+}
+
+.link {
+  color: #999999; /* Цвет ссылки в нормальном состоянии */
+  text-decoration: none; /* Убирает подчеркивание */
+  transition: color 0.3s; /* Плавный переход цвета */
+}
+
+.link:hover {
+  color: rgb(40, 40, 40); /* Цвет ссылки при наведении */
+}
+
+.link:active {
+  color: green; /* Цвет ссылки при клике */
+}
+
+.link:focus {
+  color: blue; /* Цвет ссылки при фокусе */
+  outline: none; /* Убирает стандартное обрамление фокуса браузера */
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5); /* Добавляет эффект тени при фокусе */
+}
+
+.titleTransactionStatistics {
+  position: relative;
+  padding: 100px 0px 70px 150px;
+  /* width: 280px; */
+  height: 110px;
+  font-size: 35px;
+}
+.Information{
+  position: relative;
+  padding: 0px 50px 0px 100px;
+}
+.ProjectDeals {
+  display: flex;
+}
+
+.TransactionStatisticsProject {
+  font-size: 24px;
+  padding-left: 120px;
+  padding-right: 47%;
+}
+
+.latestDeals {
+  font-size: 24px;
+  padding-right: 120px;
+}
+
+.chartWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.statistics {
+  position: relative;
+  padding-left: 100px;
+}
+
+.chartContainer {
+  position: relative;
+  display: flex;
+  width: 500px; /* Задайте желаемую ширину */
+  height: 500px; /* Задайте желаемую высоту */
+}
+
+.centerText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.centerTextBottom {
+  position: absolute;
+  top: 56%;
+  left: 46.5%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.legend {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  bottom: 190px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #999999;
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+}
+
+.tabButtons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.customButton {
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 10px 20px;
+}
+
+.latestDealsTabs{
+  display: flex;
+  margin-left: 500px;
+  width: 300px;
+  height: 300px;
+}
+
+.accordionCustomWidth{
+  width: 300px;
+}
+
+.transactionFieldsContainerInfo {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 30px 500px;
+  width: 800px; 
+  height: 160px; 
+  flex-wrap: wrap;
+}
+/* 
+.transactionFieldsContainer_3 {
+  display: flex;
+  justify-content: space-between;
+  gap: 100px;
+  margin: 0 0 30px 0;
+  margin-top: 50px;
+  width: 800px; 
+  height: 160px; 
+  flex-wrap: wrap;
+} */
+/* Styles/HomePage.module.css */
+.mainContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.transactionFieldsContainer_2 {
+  padding-top: 70px;
+  width: 800px;
+}
+
+.transactionFieldsContainer_3 {
+  width: 985px;
+  padding-top: 70px;
+}
+
+.transactionFieldsContainerInfo_2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 30px 0 0 0;
+  width: 800px;
+  height: 160px;
+  flex: 0;
+}
+
+.transactionFieldsContainerInfo_3 {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  margin: 30px 0 0 0;
+  width: 800px;
+  height: 160px;
+  flex: 0;
+}
