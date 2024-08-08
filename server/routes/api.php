@@ -14,6 +14,7 @@ use App\Http\Controllers\UserInfoController;
 use App\Http\Controllers\EntityController;
 use App\Http\Controllers\AppartmentTypeController;
 use App\Http\Controllers\AppartmentController;
+use App\Http\Controllers\CompanyAdminController;
 
 /**
  * Проверь все маршруты
@@ -95,7 +96,8 @@ Route::middleware(['auth:api', 'role:ADMIN SUPERUSER'])->group(function() {
  * role:COMPANY_ADMIN - пока такое название роли, потом можно поменять
  */
 Route::middleware(['auth:api', 'role:COMPANY_ADMIN'])->group(function() {
-  Route::post('add_company_manager', [UserController::class, 'add'])->middleware('add_role:COMPANY_MANAGER');
+  Route::post('add_company_manager', [CompanyAdminController::class, 'createManager']);
+  Route::get('get_company_managers', [CompanyAdminController::class, 'getManagers']);
 
   Route::delete('projects/{projectId}', [ProjectController::class, 'delete']);
 });

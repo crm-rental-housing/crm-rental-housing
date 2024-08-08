@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Entity from "./Entity";
-import { getEntitiesAction } from "../../api/actions/entity";
+import { getEntitiesAction } from "../../../../../../api/actions/entity";
 
 const EntityList = () => {
   const dispatch = useDispatch();

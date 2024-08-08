@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Project from "./Project";
-import { getProjectsAction } from "../../api/actions/project";
+import { getProjectsAction } from "../../../../api/actions/project";
 
 const ProjectList = () => {
   const dispatch = useDispatch();

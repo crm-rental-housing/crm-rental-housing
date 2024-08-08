@@ -13,14 +13,15 @@ import User from "./Components/UserList/User";
 
 import { refreshAction } from "./api/actions/auth";
 import { getToken } from "./token";
-import ProjectList from "./Components/ProjectList";
-import Project from "./Components/ProjectList/Project";
+
 import CompanyList from "./Components/CompanyList";
 import Company from "./Components/CompanyList/Company";
-import EntityList from "./Components/EntityList";
-import Entity from "./Components/EntityList/Entity";
-import AppartmentList from "./Components/EntityList/Entity/AppartmentList";
-import Appartment from "./Components/EntityList/Entity/AppartmentList/Appartment";
+import ProjectList from "./Components/CompanyList/Company/ProjectList";
+import Project from "./Components/CompanyList/Company/ProjectList/Project";
+import EntityList from "./Components/CompanyList/Company/ProjectList/Project/EntityList";
+import Entity from "./Components/CompanyList/Company/ProjectList/Project/EntityList/Entity";
+import AppartmentList from "./Components/CompanyList/Company/ProjectList/Project/EntityList/Entity/AppartmentList";
+import Appartment from "./Components/CompanyList/Company/ProjectList/Project/EntityList/Entity/AppartmentList/Appartment";
 
 function App() {
   const isAuth = useSelector((state) => state.auth.isAuth);
@@ -29,7 +30,6 @@ function App() {
 
   useEffect(() => {
     if (getToken()) {
-      console.log(getToken());
       dispatch(refreshAction());
     }
   }, [dispatch]);

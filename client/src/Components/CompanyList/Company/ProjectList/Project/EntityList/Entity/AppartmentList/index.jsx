@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Appartment from "./Appartment";
-import { getAppartmentsAction } from "../../../../api/actions/appartment";
+import { getAppartmentsAction } from "../../../../../../../../api/actions/appartment";
 
 const AppartmentList = () => {
   const dispatch = useDispatch();
