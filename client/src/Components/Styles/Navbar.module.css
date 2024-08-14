@@ -1,0 +1,88 @@
+/* Navbar.module.css */
+
+.wrapper {
+  width: 100%;
+  background-color: #f8f8f8; 
+  padding: 5px 40px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+.logo {
+  width: 60px; /* Adjusted width */
+  height: 54px; /* Adjusted height */
+}
+
+.logo:hover {
+  background-color: #e0e0e0;
+}
+
+/* Контейнер для навигационных ссылок, выравнивание по центру */
+.navbar_nav {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+/* Контейнер для элементов авторизации, выравнивание вправо */
+.auth_nav {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Расстояние между элементами */
+}
+
+/* Для mobile responsive */
+@media (max-width: 767px) {
+  .navbar_nav, .auth_nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+}
+
+.item {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+  padding: 12px;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.item:hover {
+  background-color: #e0e0e0;
+}
+
+.btn {
+  width: 70px;
+  height: 70px;
+  border: none;
+  border-radius: 4px;
+  background-color: #ff4d4f;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #ff7875;
+}
+
+.user_dropdown {
+  display: flex;
+  align-items: center;
+}
+
+.user_icon {
+  width: 50px; /* Adjust width as needed */
+  height: 50px; /* Adjust height as needed */
+  border-radius: 50%; /* To make the image round */
+}
+
+.dropdown-menu {
+  min-width: 150px; /* Adjust as needed */
+}
+
+.dropdown-item {
+  font-size: 14px;
+}

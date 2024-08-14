@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Navbar from "./Components/Navbar";
 import Login from "./Components/Login";
