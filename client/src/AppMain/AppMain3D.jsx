@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './AppMain3D.css';
-import AppMainContent from './AppMainContent'; // Импортируйте новый компонент
 
 const AppMain3D = () => {
   const navigate = useNavigate(); // Инициализация navigate
@@ -87,20 +86,25 @@ const AppMain3D = () => {
     navigate('/registration');
   };
 
+  const handleLearnMore = () => {
+    navigate('/main');
+  };
+
   return (
     <div>
       <div className="button-container">
         <button className="button-start_reg_1" onClick={handleLogin}>Вход</button>
         <button className="button-start_reg_2" onClick={handleRegistration}>Регистрация</button>
       </div>
-      <div className="logo" style={{ backgroundImage: 'url(/img/logo.svg)' }}></div>
+      <div className="logo" style={{ backgroundImage: 'url(/img/logo.png)' }}></div>
       <section className="layers">
         <div className="layers__container">
           <div className="layers__item layer-1" style={{ backgroundImage: 'url(/img/layer-1.jpg)' }}></div>
           <div className="layers__item layer-2" style={{ backgroundImage: 'url(/img/layer-2.png)' }}></div>
           <div className="layers__item layer-3">
             <div className="hero-content">
-              <AppMainContent /> {/* Добавление компонента с кнопками */}
+              <h1 className="Text_hello">Добро пожаловать!</h1>
+              <button className="button-start" onClick={handleLearnMore}>Узнать больше</button>
             </div>
           </div>
           <div className="layers__item layer-4">

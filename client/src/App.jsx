@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Navbar from './Components/Navbar';
+import Footer from './Components/Footer'; // Импорт футера
 import Login from './Components/Login';
 import Registration from './Components/Registration';
 import Main from './Components/Main';
@@ -39,42 +40,45 @@ function App() {
   return (
     <>
       <Navbar />
-      <Routes>
-        <Route path="/main" element={<Main />} />
-        <Route path="/companies" element={<CompanyList />} />
-        <Route path="/company" element={<Company />} />
-        {isAuth ? (
-          <>
-            <Route path="/projects" element={<ProjectList />} />
-            <Route path="/project" element={<Project />} />
-            <Route path="/entities" element={<EntityList />} />
-            <Route path="/entity" element={<Entity />} />
-            <Route path="/appartments" element={<AppartmentList />} />
-            <Route path="/appartment" element={<Appartment />} />
-            {auth.role === "USER" && (
-              <>
-                <Route path="/home" element={<Home />} />
-                <Route path="/profile" element={<Home />} />
-                <Route path="*" element={<Home />} />
-              </>
-            )}
-            {auth.role === "ADMIN" && (
-              <>
-                <Route path="/admin" element={<Admin />} />
-                <Route path="/users" element={<UserList />} />
-                <Route path="/user" element={<User />} />
-                <Route path="*" element={<Admin />} />
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            <Route path="/login" element={<Login />} />
-            <Route path="/registration" element={<Registration />} />
-            <Route path="*" element={<Login />} />
-          </>
-        )}
-      </Routes>
+      <main>
+        <Routes>
+          <Route path="/main" element={<Main />} />
+          <Route path="/companies" element={<CompanyList />} />
+          <Route path="/company" element={<Company />} />
+          {isAuth ? (
+            <>
+              <Route path="/projects" element={<ProjectList />} />
+              <Route path="/project" element={<Project />} />
+              <Route path="/entities" element={<EntityList />} />
+              <Route path="/entity" element={<Entity />} />
+              <Route path="/appartments" element={<AppartmentList />} />
+              <Route path="/appartment" element={<Appartment />} />
+              {auth.role === "USER" && (
+                <>
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/profile" element={<Home />} />
+                  <Route path="*" element={<Home />} />
+                </>
+              )}
+              {auth.role === "ADMIN" && (
+                <>
+                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/users" element={<UserList />} />
+                  <Route path="/user" element={<User />} />
+                  <Route path="*" element={<Admin />} />
+                </>
+              )}
+            </>
+          ) : (
+            <>
+              <Route path="/login" element={<Login />} />
+              <Route path="/registration" element={<Registration />} />
+              <Route path="*" element={<Login />} />
+            </>
+          )}
+        </Routes>
+      </main>
+      <Footer /> 
     </>
   );
 }

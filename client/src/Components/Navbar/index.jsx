@@ -1,8 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Navbar, Nav, Dropdown } from "react-bootstrap";
-// import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
 import { logoutAction } from "../../api/actions/auth";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../Styles/Navbar.module.css"; // Импорт CSS модуля

@@ -16,15 +16,17 @@ body {
 }
 
 .logo {
-  --logo-size: calc(var(--index) * 7.8);
+  --logo-size: calc(var(--index) * 20); /* Уменьшение коэффициента для уменьшения размера логотипа */
   width: var(--logo-size);
   height: var(--logo-size);
   background-repeat: no-repeat;
+  background-size: contain; /* Чтобы логотип не искажал */
   position: absolute;
-  left: calc(51% - calc(var(--logo-size) / 2));
-  top: calc(var(--index) * 2.8);
+  left: calc(50% - calc(var(--logo-size) / 2)); /* Центрирование по горизонтали */
+  top: calc(var(--index) * 3.1); /* Отступ от верхнего края */
   z-index: 1;
 }
+
 
 .layers {
   perspective: 1000px;
@@ -55,7 +57,7 @@ body {
 }
 
 .layer-2 {
-  transform: translateZ(80px) scale(.88);
+  transform: translateZ(80px) scale(.5);
 }
 
 .layer-3 {
@@ -170,8 +172,10 @@ body {
   border: rgb(255 255 255 / .4) 3px solid;
   outline: none;
   cursor: pointer;
-  margin-top: calc(var(--index) * 2.5);
+  margin-top: calc(var(--index) * 3.5);
+  z-index: 2; /* Увеличить z-index */
 }
+
 
 .layer-4, .layer-5, .layer-6 {
   pointer-events: none;
