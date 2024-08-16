@@ -30,7 +30,7 @@ const CustomNavbar = () => {
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className={styles.navbar_nav}>
-            <Nav.Link as={NavLink} to={isAuth ? "/" : "/main"} className={styles.item}>
+            <Nav.Link as={NavLink} to={isAuth ? "/admin" : "/main"} className={styles.item}>
               Главная
             </Nav.Link>
             <Nav.Link as={NavLink} to="/search" className={styles.item}>

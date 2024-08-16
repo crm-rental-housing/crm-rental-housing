@@ -164,6 +164,7 @@
   transform: translate(-50%, -50%);
   font-size: 48px;
   font-weight: bold;
+  color: #757474;
 }
 
 .centerTextBottom {
@@ -173,6 +174,7 @@
   transform: translate(-50%, -50%);
   font-size: 16px;
   font-weight: bold;
+  color: #757474;
 }
 
 .legend {
