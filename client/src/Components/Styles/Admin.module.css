@@ -1,268 +1,265 @@
 .companyName {
-  }
-  
-  .title {
-    position: relative;
-    top: 10px;
-    left: 22%;
-    font-size: 50px;
-    color: #333; 
-  }
-  
-  .description {
-    position: absolute;
+}
 
-    height: 189px;
-    width: 709.04px;
-    margin: 0% auto; 
-    padding: 20px; 
-    right: 15%;
-    font-size: 18px; 
-    line-height: 1.5; 
-    color: #555; 
-  }
-  
-  .contactInfo {
-    position: relative;
-    top: 20px;
-    font-size: 18px;
-    color: #999999;
-    left: 15%;
-  }
-  
-  .battonEdit {
-    position: relative;
-    margin-bottom: 50px;
-    top: 40px;
-    left: 15%;
-    width: 450px;
-    background-color: #ffffff; 
-    border: 2px solid #000000; 
-    color: rgb(67, 67, 67); 
-    font-size: 16px;
-    padding: 10px 20px;
-    transition: background-color 0.3s, border-color 0.3s; 
-  }
-  
-  .battonEdit:hover {
-    background-color: #b6b6b6; 
-    border: 2px solid #000000; 
-    color: rgb(0, 0, 0);
-  }
-  
-  .battonEdit:active {
-    background-color: #999999; 
-    border: 2px solid #000000; 
-    color: rgb(0, 0, 0); 
-  }
-  
-  .battonEdit:focus {
-    outline: none; 
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5); 
-  }
+.title {
+  position: relative;
+  top: 10px;
+  left: 22%;
+  font-size: 50px;
+  color: #333; 
+}
 
-/* Admin.module.css */
+.description {
+  position: absolute;
 
-.navLinks {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center; /* Выравнивание по центру */
-    padding: 10px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .navLinks a {
-    text-decoration: none;
-    color: #007bff;
-    font-size: 16px;
-    font-weight: 500;
-    margin: 0 10px;
-    transition: color 0.3s, background-color 0.3s;
-    padding: 8px 16px;
-    border-radius: 4px;
-  }
-  
-  .navLinks a:hover {
-    color: #ffffff;
-    background-color: #007bff;
-  }
-  
-  .navLinks a.active {
-    color: #ffffff;
-    background-color: #0056b3;
-  }
-  
-  
-  .link {
-    color: #999999; 
-    text-decoration: none; 
-    transition: color 0.3s; 
-  }
-  
-  .link:hover {
-    color: rgb(40, 40, 40);
-  }
-  
-  .link:active {
-    color: green; 
-  }
-  
-  .link:focus {
-    color: blue; 
-    outline: none; 
-    box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5);
-  }
-  
-  .titleTransactionStatistics {
-    position: relative;
-    padding: 100px 0px 70px 150px;
-    /* width: 280px; */
-    height: 110px;
-    font-size: 35px;
-  }
-  .Information{
-    position: relative;
-    padding: 0px 50px 0px 100px;
-  }
-  .ProjectDeals {
-    display: flex;
-  }
-  
-  .TransactionStatisticsProject {
-    font-size: 24px;
-    padding-left: 120px;
-    padding-right: 47%;
-  }
-  
-  .latestDeals {
-    font-size: 24px;
-    padding-right: 120px;
-  }
-  
-  .chartWrapper {
-    display: flex;
-    align-items: center;
-  }
-  
-  .statistics {
-    position: relative;
-    padding-left: 100px;
-  }
-  
-  .chartContainer {
-    position: relative;
-    display: flex;
-    width: 500px; /* Задайте желаемую ширину */
-    height: 500px; /* Задайте желаемую высоту */
-  }
-  
-  .centerText {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 48px;
-    font-weight: bold;
-  }
-  
-  .centerTextBottom {
-    position: absolute;
-    top: 56%;
-    left: 46.5%;
-    transform: translate(-50%, -50%);
-    font-size: 16px;
-    font-weight: bold;
-  }
-  
-  .legend {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    margin-left: 20px;
-    bottom: 190px;
-  }
-  
-  .legendItem {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-    color: #999999;
-  }
-  
-  .legendColor {
-    width: 12px;
-    height: 12px;
-    margin-right: 8px;
-  }
-  
-  .tabButtons {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-  
-  .customButton {
-    border-radius: 10px;
-    font-size: 16px;
-    padding: 10px 20px;
-  }
-  
-  .latestDealsTabs{
-    display: flex;
-    margin-left: 500px;
-    width: 300px;
-    height: 300px;
-  }
-  
-  .accordionCustomWidth{
-    width: 300px;
-  }
-  
-  .transactionFieldsContainerInfo {
-    display: flex;
-    justify-content: space-between;
-    /* margin: 0 0 30px 500px; */
-    width: 800px; 
-    height: 160px; 
-    flex-wrap: wrap;
-  }
-  
-  .mainContainer {
-    display: flex;
-    justify-content: space-between;
-  }
-  
-  .transactionFieldsContainer_2 {
-    padding-top: 70px;
-    width: 800px;
-  }
-  
-  .transactionFieldsContainer_3 {
-    width: 985px;
-    padding-top: 70px;
-    /* margin-left: 365px; */
-  }
-  
-  .transactionFieldsContainerInfo_2 {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    margin: 30px 0 0 0;
-    width: 800px;
-    height: 160px;
-    flex: 0;
-  }
-  
-  .transactionFieldsContainerInfo_3 {
-    position: static;
-    display: flex;
-    flex-direction: column;
-    margin: 30px 0 0 0;
-    width: 800px;
-    height: 160px;
-    flex: 0;
-  }
-  
+  height: 189px;
+  width: 709.04px;
+  margin: 0% auto; 
+  padding: 20px; 
+  right: 15%;
+  font-size: 18px; 
+  line-height: 1.5; 
+  color: #555; 
+}
+
+.contactInfo {
+  position: relative;
+  top: 20px;
+  font-size: 18px;
+  color: #999999;
+  left: 15%;
+}
+
+.battonEdit {
+  position: relative;
+  margin-bottom: 50px;
+  top: 40px;
+  left: 15%;
+  width: 450px;
+  background-color: #ffffff; 
+  border: 2px solid #000000; 
+  color: rgb(67, 67, 67); 
+  font-size: 16px;
+  padding: 10px 20px;
+  transition: background-color 0.3s, border-color 0.3s; 
+}
+
+.battonEdit:hover {
+  background-color: #b6b6b6; 
+  border: 2px solid #000000; 
+  color: rgb(0, 0, 0);
+}
+
+.battonEdit:active {
+  background-color: #999999; 
+  border: 2px solid #000000; 
+  color: rgb(0, 0, 0); 
+}
+
+.battonEdit:focus {
+  outline: none; 
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5); 
+}
+
+/* .navLinks {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center; 
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #8B8B8B;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 10px;
+  transition: color 0.3s, background-color 0.3s;
+  padding: 8px 16px;
+  border-radius: 4px;
+}
+
+.navLinks a:hover {
+  color: #ffffff;
+  background-color: #BB2649;
+}
+
+.navLinks a.active {
+  color: #ffffff;
+  background-color: #4a0112;
+} */
+
+
+.link {
+  color: #999999; 
+  text-decoration: none; 
+  transition: color 0.3s; 
+}
+
+.link:hover {
+  color: rgb(40, 40, 40);
+}
+
+.link:active {
+  color: green; 
+}
+
+.link:focus {
+  color: blue; 
+  outline: none; 
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.titleTransactionStatistics {
+  position: relative;
+  padding: 100px 0px 70px 150px;
+  /* width: 280px; */
+  height: 110px;
+  font-size: 35px;
+}
+.Information{
+  position: relative;
+  padding: 0px 50px 0px 100px;
+}
+.ProjectDeals {
+  display: flex;
+}
+
+.TransactionStatisticsProject {
+  font-size: 24px;
+  padding-left: 120px;
+  padding-right: 47%;
+}
+
+.latestDeals {
+  font-size: 24px;
+  padding-right: 120px;
+}
+
+.chartWrapper {
+  display: flex;
+  align-items: center;
+}
+
+.statistics {
+  position: relative;
+  padding-left: 100px;
+}
+
+.chartContainer {
+  position: relative;
+  display: flex;
+  width: 500px; /* Задайте желаемую ширину */
+  height: 500px; /* Задайте желаемую высоту */
+}
+
+.centerText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 48px;
+  font-weight: bold;
+}
+
+.centerTextBottom {
+  position: absolute;
+  top: 56%;
+  left: 46.5%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.legend {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-left: 20px;
+  bottom: 190px;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #999999;
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  margin-right: 8px;
+}
+
+.tabButtons {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.customButton {
+  border-radius: 10px;
+  font-size: 16px;
+  padding: 10px 20px;
+}
+
+.latestDealsTabs{
+  display: flex;
+  margin-left: 500px;
+  width: 300px;
+  height: 300px;
+}
+
+.accordionCustomWidth{
+  width: 300px;
+}
+
+.transactionFieldsContainerInfo {
+  display: flex;
+  justify-content: space-between;
+  /* margin: 0 0 30px 500px; */
+  width: 800px; 
+  height: 160px; 
+  flex-wrap: wrap;
+}
+
+.mainContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.transactionFieldsContainer_2 {
+  padding-top: 70px;
+  width: 800px;
+}
+
+.transactionFieldsContainer_3 {
+  width: 985px;
+  padding-top: 70px;
+  /* margin-left: 365px; */
+}
+
+.transactionFieldsContainerInfo_2 {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 30px 0 0 0;
+  width: 800px;
+  height: 160px;
+  flex: 0;
+}
+
+.transactionFieldsContainerInfo_3 {
+  position: static;
+  display: flex;
+  flex-direction: column;
+  margin: 30px 0 0 0;
+  width: 800px;
+  height: 160px;
+  flex: 0;
+}

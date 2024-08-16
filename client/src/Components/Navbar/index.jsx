@@ -1,6 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Navbar, Nav, Dropdown } from "react-bootstrap";
+// import Dropdown from 'react-bootstrap/Dropdown';
+import DropdownButton from 'react-bootstrap/DropdownButton';
 import { logoutAction } from "../../api/actions/auth";
 import { useDispatch, useSelector } from "react-redux";
 import styles from "../Styles/Navbar.module.css"; // Импорт CSS модуля
@@ -58,7 +60,7 @@ const CustomNavbar = () => {
                     alt="Notifications"
                   />
                 </Nav.Link>
-                <Dropdown className={styles.user_dropdown}>
+                <Dropdown align="end" className={styles.user_dropdown}>
                   <Dropdown.Toggle variant="link" id="dropdown-basic">
                     <img
                       src={userIcon}
@@ -70,6 +72,16 @@ const CustomNavbar = () => {
                   <Dropdown.Menu>
                     <Dropdown.Item as={NavLink} to="/settings">Настройки</Dropdown.Item>
                     <Dropdown.Item as={NavLink} to="/support">Чат с поддержкой</Dropdown.Item>
+                    <Dropdown.Divider />
+                    <nav className={styles.verticalNav}>
+                      <NavLink to="/users" className={styles.navLink}>Пользователи</NavLink>
+                      <NavLink to="/companies" className={styles.navLink}>Компании</NavLink>
+                      <NavLink to="/projects" className={styles.navLink}>Проекты</NavLink>
+                      <NavLink to="/entities" className={styles.navLink}>Объекты</NavLink>
+                      <NavLink to="/appartments" className={styles.navLink}>Квартиры</NavLink>
+                      <NavLink to="/managers" className={styles.navLink}>Менеджеры</NavLink>
+                    </nav>
+                    <Dropdown.Divider />
                     <Dropdown.Item onClick={handleLogout}>Выход</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>

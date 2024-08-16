@@ -49,14 +49,14 @@ const HomePage = () => {
 
   return (
     <div>
-      <div className={styles.navLinks}>
+      {/* <div className={styles.navLinks}>
         <NavLink to="/users">Пользователи</NavLink>
         <NavLink to="/companies">Компании</NavLink>
         <NavLink to="/projects">Проекты</NavLink>
         <NavLink to="/entities">Объекты</NavLink>
         <NavLink to="/appartments">Квартиры</NavLink>
         <NavLink to="/managers">Менеджеры</NavLink>
-      </div>
+      </div> */}
       <div className={styles.companyName}>
         <h1 className={styles.title}>Admin panel</h1>
         <p className={styles.description}>
