@@ -21,12 +21,13 @@ class AuthController extends Controller
   public function register(Request $request) {
     $validatedData = Validator::make($request->all(), [
       'email' => 'required|string|unique:users',
-      'password' => 'required|string|min:8'
+      'password' => 'required|string|min:8',
+      'username' => 'required|string|unique:user_infos',
     ]);
 
     if ($validatedData->fails()) {
       return response()->json([
-        'message' => 'Некорректный ввод, возможно данный email уже занят'
+        'message' => 'Некорректный ввод, возможно данный email, username уже занят'
       ], 400);
     }
 
@@ -39,7 +40,10 @@ class AuthController extends Controller
       'role_id' => $role->id, // ID роли пользователя
       'email_remember_token' => $email_remember_token,
     ]);
-    UserInfo::create(['user_id' => $user->id]);
+    UserInfo::create([
+      'username' => $request['username'],
+      'user_id' => $user->id
+    ]);
     // Mail::to($user->email)->send(new EmailVerification($user, $email_remember_token));
     $accessToken = JWTAuth::fromUser($user);
     $refreshToken = $this->generateRefreshToken($user);

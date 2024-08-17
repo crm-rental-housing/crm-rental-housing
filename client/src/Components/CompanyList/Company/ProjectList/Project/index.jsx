@@ -1,4 +1,5 @@
 import React from "react";
+import { NavLink } from "react-router-dom";
 
 const Project = (props) => {
   return (
@@ -13,6 +14,9 @@ const Project = (props) => {
         <div>{props.project.user.name.first}</div>
         <div>{props.project.user.name.last}</div>
         <div>{props.project.user.name.role}</div>
+        <NavLink to={`/projects/${props.project.id}`}>
+          Посмотреть объекты
+        </NavLink>
       </div>
     </div>
   );

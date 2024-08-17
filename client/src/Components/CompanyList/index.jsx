@@ -8,13 +8,27 @@ const CompanyList = () => {
   useEffect(() => {
     dispatch(getCompaniesAction());
   }, [dispatch]);
-  const companies = useSelector((state) => state.companies.companies).map(
-    (company, index) => <Company key={index} company={company} />
-  );
+  const companies = useSelector((state) => state.companies.companies);
+  /**
+   * ============НУЖНО ПРОДУМАТЬ КАК ПЕРЕДАВАТЬ ID ДАЛЬШЕ =================================
+   * ======НАПРИМЕР, ЧТОБЫ ПРИ НАЖАТИИ НА ПУНКТ ИЗ СПИСКА ПЕРЕДЕДАВАЛСЯ ID ================
+   */
   return (
     <div>
       <h1>Список компаний</h1>
-      <div>{companies}</div>
+      {companies ? (
+        <>
+          <div>
+            {companies.map((company, index) => (
+              <Company key={index} company={company} />
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <div>Компаний нет</div>
+        </>
+      )}
     </div>
   );
 };

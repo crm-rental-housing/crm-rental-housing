@@ -21,6 +21,8 @@ class CompanySeeder extends Seeder
         'description' => 'First company',
         'email' => 'company@company1.ru',
         'phone_number' => '+7XXXXXXXXX1',
+        'created_at' => date('Y-m-d H:i:s'),
+        'updated_at' => date('Y-m-d H:i:s'),
       ],
       [
         'id' => 2,
@@ -28,6 +30,8 @@ class CompanySeeder extends Seeder
         'description' => 'Second company',
         'email' => 'company@company2.ru',
         'phone_number' => '+7XXXXXXXXX2',
+        'created_at' => date('Y-m-d H:i:s'),
+        'updated_at' => date('Y-m-d H:i:s'),
       ],
       [
         'id' => 3,
@@ -35,6 +39,8 @@ class CompanySeeder extends Seeder
         'description' => 'Third company',
         'email' => 'company@company3.ru',
         'phone_number' => '+7XXXXXXXXX3',
+        'created_at' => date('Y-m-d H:i:s'),
+        'updated_at' => date('Y-m-d H:i:s'),
       ],
     ];
 

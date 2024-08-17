@@ -12,6 +12,7 @@ class EntityController extends Controller
     $entities = [];
     foreach (Entity::orderBy('city', 'asc')->cursor() as $entity) {
       $entities[] = [
+        'id' => $entity->id,
         'city' => $entity->city,
         'street' => $entity->street,
         'house' => $entity->house,
@@ -51,6 +52,7 @@ class EntityController extends Controller
     }
     return response()->json([
       'entities' => [
+        'id' => $entity->id,
         'city' => $entity->city,
         'street' => $entity->street,
         'house' => $entity->house,
@@ -82,6 +84,7 @@ class EntityController extends Controller
     }
     return response()->json([
       'entity' => [
+        'id' => $entity->id,
         'city' => $entity->city,
         'street' => $entity->street,
         'house' => $entity->house,
@@ -133,6 +136,7 @@ class EntityController extends Controller
     
     return response()->json([
       'message' => 'Объект успешно добавлен',
+      'entity_id' => $entity->id,
     ]);
   }
 

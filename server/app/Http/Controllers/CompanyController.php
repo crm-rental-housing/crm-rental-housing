@@ -13,6 +13,7 @@ class CompanyController extends Controller
     $companies = []; 
 		foreach (Company::orderBy('name', 'asc')->cursor() as $company) {
 			$companies[] = [
+				'id' => $company->id,
 				'name' => $company->name,
 				'description' => $company->description,
 				'email' => $company->email,
@@ -38,6 +39,7 @@ class CompanyController extends Controller
 		}
 		return response()->json([
 			'company' => [
+				'id' => $company->id,
 				'name' => $company->name,
 				'description' => $company->description,
 				'email' => $company->email,

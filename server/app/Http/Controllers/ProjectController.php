@@ -13,12 +13,13 @@ class ProjectController extends Controller
 		$projects = [];
 		foreach (Project::orderBy('name', 'asc')->cursor() as $project) {
 			$projects[] = [
+				'id' => $project->id,
 				'name' => $project->name,
 				'description' => $project->description,
 				'deadline' => $project->deadline,
-				'payment_type' => $project->payment_type->value,
+				'payment_type' => $project->paymentType->name,
 				'company' => [
-					'id' => $project->company_id,
+					'id' => $project->company->id,
 					'name' => $project->company->name,
 				],
 				'user' => [
@@ -50,6 +51,7 @@ class ProjectController extends Controller
 		}
 		return response()->json([
 			'project' => [
+				'id' => $project->id,
 				'name' => $project->name,
 				'description' => $project->description,
 				'deadline' => $project->deadline,

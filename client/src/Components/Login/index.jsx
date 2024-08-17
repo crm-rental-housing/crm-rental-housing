@@ -4,6 +4,8 @@ import { NavLink } from "react-router-dom";
 import { loginAction } from "../../api/actions/auth";
 import { useDispatch } from "react-redux";
 
+import styles from "./index.module.css";
+
 const Login = () => {
   const dispatch = useDispatch();
 
@@ -16,34 +18,38 @@ const Login = () => {
   };
 
   return (
-    <div className="login">
-      <h2 className="login__title">Вход</h2>
-      <label className="login__label">Email</label>
-      <input
-        className="login__input"
-        type="text"
-        value={email}
-        placeholder="Введите адрес электронной почты"
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <label className="login__label">Пароль</label>
-      <input
-        className="login__input"
-        type="text"
-        value={password}
-        placeholder="Введите пароль"
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <NavLink className="login__forget" to="/login/forget">
-        Восстановить пароль
-      </NavLink>
-      <button className="login__btn" onClick={handleSubmit}>
-        Войти
-      </button>
-      <div className="login__redirect">
-        <span>Ещё нет аккаунта? </span>
-        <NavLink to="/registration">Зарегистрироваться</NavLink>
-      </div>
+    <div className={styles.container}>
+      <h2 className={styles.title}>Вход</h2>
+      <form className={styles.form} onSubmit={handleSubmit}>
+        <input
+          className={styles.input}
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Введите Email"
+        />
+        <input
+          className={styles.input}
+          label="Пароль"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Введите пароль"
+        />
+        <button className={styles.submitButton} type="submit">
+          Войти
+        </button>
+        <NavLink className={styles.forgotPassword} to="/login/forget">
+          Восстановить пароль
+        </NavLink>
+        <div className={styles.redirect}>
+          <span>Ещё нет аккаунта? </span>
+          <NavLink to="/registration" className={styles.registerLink}>
+            Зарегистрироваться
+          </NavLink>
+        </div>
+      </form>
     </div>
   );
 };

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\UserInfo;
@@ -17,6 +18,7 @@ class UserController extends Controller
     $formattedUsers = [];
     foreach ($users = User::orderBy('email', 'asc')->cursor() as $user) {
       $formattedUsers[] = [
+        'id' => $user->id,
         'email' => $user->email,
         'role' => $user->role->value,
         'company' => $user->company ? $user->company->name : null,
@@ -24,7 +26,7 @@ class UserController extends Controller
           'username' => $user->info->username,
           'first_name' => $user->info->first_name,
           'middle_name' => $user->info->middle_name,
-          'last_name' => $user->inf0->last_name,
+          'last_name' => $user->info->last_name,
           'gender' => $user->info->gender,
           'birtdate' => $user->info->birthdate,
           'phone_number' => $user->info->phone_number,
@@ -46,7 +48,7 @@ class UserController extends Controller
       'users' => $formattedUsers
     ]);
   }
-
+  
   public function getOne($userId) {
     $user = User::where('id', $userId)->first();
     if (!$user) {
@@ -63,7 +65,7 @@ class UserController extends Controller
           'username' => $user->info->username,
           'first_name' => $user->info->first_name,
           'middle_name' => $user->info->middle_name,
-          'last_name' => $user->inf0->last_name,
+          'last_name' => $user->info->last_name,
           'gender' => $user->info->gender,
           'birtdate' => $user->info->birthdate,
           'phone_number' => $user->info->phone_number,
@@ -126,7 +128,7 @@ class UserController extends Controller
       ], 404);
     }
     // Дополнить или переделать
-		if (auth()->user()->id !== $user->id || auth()->user()->role->value !== 'ADMIN') {
+		if (auth()->user()->id !== $user->id && auth()->user()->role->value !== 'ADMIN') {
 			return response()->json([
 				'message' => 'У вас нет прав на обновление данных пользователя'
 			], 400);
@@ -141,17 +143,16 @@ class UserController extends Controller
       $request->only(
         ['username', 'first_name', 'middle_name', 'last_name', 'gender', 'birthdate', 'phone_number']
       ), [
-      'username' => ['nullable', 'string', Rule::unique('user_infos')->ignore($userInfo->id)],
+      'username' => ['required', 'string', Rule::unique('user_infos')->ignore($userInfo->id)],
       'first_name' => ['nullable', 'string'],
       'middle_name' => ['nullable', 'string'],
       'last_name' => ['nullable', 'string'],
       'gender' => ['nullable', 'string'],
       'birthdate' => ['nullable', 'string'],
-      'phone_number' => ['nullable', 'string', Rule::unique('user_infos')->ignore($userInfo->phone_number)],
-      'user_id' => $userInfo->user_id,
+      'phone_number' => ['nullable', 'string'],
     ]);
 
-    if ($validatedData->fails() || $validatedInfoData->fails()) {
+    if ($validatedUserData->fails() || $validatedInfoData->fails()) {
       return response()->json([
         'message' => 'Некорректный ввод'
       ], 400);
@@ -172,7 +173,7 @@ class UserController extends Controller
       'user_id' => $userInfo->user_id,
     ];
     
-    $user->update($newData);
+    $user->update($newUserData);
     $userInfo->update($newUserInfoData);
     return response()->json([
       'message' => 'Данные пользователя успешно обновлены'
@@ -206,13 +207,19 @@ class UserController extends Controller
     $user = auth()->user();
     return response()->json([
       'user' => [
+        'id' => $user->id,
         'email' => $user->email,
-        'company' => $user->company ? $user->company->name : null,
+        'company' => $user->company ? [
+          'name' => $user->company->name,
+          'description' => $user->company->description,
+          'email' => $user->company->email,
+          'phone_number' => $user->company->phone_number,
+        ] : null,
         'info' => $user->info ? [
           'username' => $user->info->username,
           'first_name' => $user->info->first_name,
           'middle_name' => $user->info->middle_name,
-          'last_name' => $user->inf0->last_name,
+          'last_name' => $user->info->last_name,
           'gender' => $user->info->gender,
           'birtdate' => $user->info->birthdate,
           'phone_number' => $user->info->phone_number,

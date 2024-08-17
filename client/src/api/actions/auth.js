@@ -23,9 +23,11 @@ export const loginAction = (email, password) => {
       const token = data.access_token.token;
       const decodedData = jwtDecode(token);
       const user = {
+        id: decodedData.id,
         email: decodedData.email,
         role: decodedData.role,
         expiresIn: data.access_token.expires_in,
+        company: decodedData.company,
       };
       setToken(token);
       dispatch(setAuth(user));
@@ -35,13 +37,14 @@ export const loginAction = (email, password) => {
   };
 };
 
-export const registrationAction = (email, password) => {
+export const registrationAction = (email, username, password) => {
   return async (dispatch) => {
     try {
       const response = await axios.post(
         `${API_URL}/auth/registration`,
         {
           email,
+          username,
           password,
         },
         {
@@ -52,9 +55,11 @@ export const registrationAction = (email, password) => {
       const token = data.access_token.token;
       const decodedData = jwtDecode(token);
       const user = {
+        id: decodedData.id,
         email: decodedData.email,
         role: decodedData.role,
         expiresIn: data.access_token.expires_in,
+        company: decodedData.company,
       };
       setToken(token);
       dispatch(setAuth(user));
@@ -74,9 +79,11 @@ export const refreshAction = () => {
       const token = data.access_token.token;
       const decodedData = jwtDecode(token);
       const user = {
+        id: decodedData.id,
         email: decodedData.email,
         role: decodedData.role,
         expiresIn: data.access_token.expires_in,
+        company: decodedData.company,
       };
       setToken(token);
       dispatch(setAuth(user));

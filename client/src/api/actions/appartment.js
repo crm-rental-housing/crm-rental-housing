@@ -20,3 +20,23 @@ export const getAppartmentsAction = () => {
     }
   };
 };
+
+export const addAppartmentsUrlAction = async (entity_id, link) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/entities/${entity_id}/appartments/url`,
+      {
+        link: link,
+      },
+      {
+        withCredentials: true,
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+        },
+      }
+    );
+    console.log(response.data.message);
+  } catch (error) {
+    console.log(error.response.data.message);
+  }
+};
