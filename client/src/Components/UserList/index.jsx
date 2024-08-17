@@ -13,7 +13,7 @@ const UserList = (props) => {
   const users = useSelector((state) => state.users.users);
 
   return (
-    <div>
+    <div className="userlist">
       <h1>Список пользователей</h1>
       {users ? (
         <>
