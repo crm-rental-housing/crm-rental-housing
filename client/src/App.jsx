@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import Header from "./Components/Header";
+import CustomNavbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import Login from "./Components/Login";
 import Registration from "./Components/Registration";
@@ -28,16 +28,6 @@ import CreateProjectPage from "./Components/CompanyList/Company/ProjectList/Proj
 import CreateEntityPage from "./Components/CompanyList/Company/ProjectList/Project/EntityList/Entity/CreateEntityPage";
 import AdminPanel from "./Components/AdminPanel";
 
-import { getToken } from "./token";
-import ProjectList from "./Components/CompanyList/Company/ProjectList";
-import Project from "./Components/CompanyList/Company/ProjectList/Project";
-import CompanyList from "./Components/CompanyList";
-import Company from "./Components/CompanyList/Company";
-import EntityList from "./Components/CompanyList/Company/ProjectList/Project/EntityList";
-import Entity from "./Components/CompanyList/Company/ProjectList/Project/EntityList/Entity";
-import AppartmentList from "./Components/CompanyList/Company/ProjectList/Project/EntityList/Entity/AppartmentList";
-import Appartment from "./Components/CompanyList/Company/ProjectList/Project/EntityList/Entity/AppartmentList/Appartment";
-
 import "./App.css";
 function App() {
   const isAuth = useSelector((state) => state.auth.isAuth);
@@ -52,8 +42,8 @@ function App() {
    * =======ПОДУМАТЬ КАК РЕАЛИЗОВАТЬ ВЛОЖЕННЫЕ РОУТЫ=========
    */
   return (
-    <BrowserRouter>
-      <Header />
+    <>
+      <CustomNavbar />
       <Routes>
         <Route path="/main" element={<Main />} />
         <Route path="/companies" element={<CompanyList />} />
@@ -106,7 +96,7 @@ function App() {
         )}
       </Routes>
       <Footer />
-    </BrowserRouter>
+    </>
   );
 }
 

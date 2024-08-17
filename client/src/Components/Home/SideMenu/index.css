@@ -28,6 +28,7 @@
   width: 72px;
   border: none;
   text-align: start;
+  background-color: inherit;
 }
 
 .side_menu__button:hover {
