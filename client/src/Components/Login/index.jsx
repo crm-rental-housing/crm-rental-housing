@@ -1,6 +1,6 @@
+import styles from "../Styles/Login.module.css"; // Импорт CSS модуля
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-
 import { loginAction } from "../../api/actions/auth";
 import { useDispatch } from "react-redux";
 
@@ -8,7 +8,6 @@ import styles from "./index.module.css";
 
 const Login = () => {
   const dispatch = useDispatch();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 

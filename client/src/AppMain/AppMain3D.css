@@ -1,0 +1,182 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --index: calc(1vw + 1vh);
+  --transition: 1.5s cubic-bezier(.05, .5, 0, 1);
+}
+
+body {
+  /* background-color: #000; */
+  /* color: #fff; */
+  font-family: 'Arial', sans-serif; /* Установите основной шрифт */
+}
+
+.logo {
+  --logo-size: calc(var(--index) * 20); /* Уменьшение коэффициента для уменьшения размера логотипа */
+  width: var(--logo-size);
+  height: var(--logo-size);
+  background-repeat: no-repeat;
+  background-size: contain; /* Чтобы логотип не искажал */
+  position: absolute;
+  left: calc(50% - calc(var(--logo-size) / 2)); /* Центрирование по горизонтали */
+  top: calc(var(--index) * 3.1); /* Отступ от верхнего края */
+  z-index: 1;
+}
+
+
+.layers {
+  perspective: 1000px;
+  overflow: hidden;
+}
+
+.layers__container {
+  height: 100vh;
+  min-height: 500px;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--move-y)) rotateY(var(--move-x));
+  will-change: transform;
+  transition: transform var(--transition);
+}
+
+.layers__item {
+  position: absolute;
+  inset: -5vw;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.layer-1 {
+  transform: translateZ(-55px) scale(1.06);
+}
+
+.layer-2 {
+  transform: translateZ(80px) scale(.5);
+}
+
+.layer-3 {
+  transform: translateZ(180px) scale(.8);
+}
+
+.layer-4 {
+  transform: translateZ(190px) scale(.9);
+}
+
+.layer-5 {
+  transform: translateZ(300px) scale(.9);
+}
+
+.layer-6 {
+  transform: translateZ(380px);
+}
+
+.hero-content {
+  font-size: calc(var(--index) * 2.9);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: calc(var(--index) * -.15);
+  line-height: 1.35em;
+  margin-top: calc(var(--index) * 5.5);
+}
+
+.hero-content span {
+  display: block;
+}
+
+.hero-content__p {
+  text-transform: none;
+  font-family: 'Arial', sans-serif; /* Установите основной шрифт */
+  letter-spacing: normal;
+  font-size: calc(var(--index) * .73);
+  line-height: 3;
+}
+
+.Text_hello{
+  font-family: Arial, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: calc(var(--index) * 2.71);
+  letter-spacing: -.02vw;
+  padding: calc(var(--index) * .7) calc(var(--index) * 1.25);
+  background-color: transparent;
+  color: #fff;
+  border-radius: 10em;
+  outline: none;
+  cursor: pointer;
+  margin-top: calc(var(--index) * 2.5);
+}
+
+/* Родительский контейнер для кнопок */
+.button-container {
+  position: absolute;
+  top: 20px; /* Отступ от верхнего края */
+  right: 20px; /* Отступ от правого края */
+  display: flex;
+  align-items: center; /* Вертикальное центрирование кнопок */
+  gap: 20px; /* Расстояние между кнопками */
+}
+
+/* Основные стили для кнопок */
+.button-start_reg_1, .button-start_reg_2 {
+  font-family: Arial, sans-serif; /* Шрифт для кнопок */
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 24px; /* Увеличен размер шрифта */
+  letter-spacing: 0.1em; /* Увеличено межбуквенное расстояние */
+  padding: 15px 30px; /* Увеличены отступы */
+  background-color: transparent;
+  color: #fff;
+  border-radius: 1em;
+  border: rgba(255, 255, 255, 0.4) 3px solid;
+  outline: none;
+  cursor: pointer;
+  z-index: 1; /* Чтобы кнопки не перекрывались другими элементами */
+}
+
+/* Стили для кнопок при наведении */
+.button-start_reg_1:hover, .button-start_reg_2:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Стили для кнопок при нажатии */
+.button-start_reg_1:active, .button-start_reg_2:active {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Специфичные стили для кнопок "Вход" и "Регистрация" */
+.button-start_reg_1 {
+  --index: 2; /* Можно оставить для гибкости, если используются в других местах */
+}
+
+.button-start_reg_2 {
+  --index: 2.5; /* Можно оставить для гибкости, если используются в других местах */
+}
+
+
+.button-start {
+  font-family: Arial, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: calc(var(--index) * .71);
+  letter-spacing: -.02vw;
+  padding: calc(var(--index) * 0) calc(var(--index) * 1.25);
+  background-color: transparent;
+  color: #fff;
+  border-radius: 5em;
+  border: rgb(255 255 255 / .4) 3px solid;
+  outline: none;
+  cursor: pointer;
+  margin-top: calc(var(--index) * 3.5);
+  z-index: 2; /* Увеличить z-index */
+}
+
+
+.layer-4, .layer-5, .layer-6 {
+  pointer-events: none;
+}

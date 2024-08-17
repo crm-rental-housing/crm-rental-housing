@@ -1,0 +1,57 @@
+.container {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+.header {
+  padding: 20px 0;
+}
+
+.searchForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.searchInput {
+  flex: 0 0 300px; /* Фиксированная ширина поля поиска */
+  max-width: 100%;
+}
+
+.searchButton {
+  margin-left: 10px;
+}
+
+.propertyList {
+  margin-top: 20px;
+}
+
+.card {
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.card-img-top {
+  height: 200px;
+  object-fit: cover;
+}
+
+.advantages {
+  background-color: #e9ecef;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.advantages h3 {
+  margin-top: 10px;
+}
+
+.advantages p {
+  color: #666;
+}
+
+.gallery {
+  padding: 20px;
+}

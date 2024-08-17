@@ -7,7 +7,8 @@ import styles from "./index.module.css";
 
 const Registration = () => {
   const dispatch = useDispatch();
-
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -21,6 +22,7 @@ const Registration = () => {
     }
     await dispatch(registrationAction(email, username, password));
   };
+
   return (
     <div className={styles.container}>
       <h2 className={styles.title}>Регистрация</h2>

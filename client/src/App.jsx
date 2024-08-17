@@ -1,6 +1,8 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+// src/App.js
+import { Routes, Route } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import Header from "./Components/Header";
 import Footer from "./Components/Footer";
