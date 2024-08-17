@@ -1,0 +1,95 @@
+/* Основной контейнер формы */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+/* Заголовок формы */
+.title {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+/* Форма */
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Метки формы */
+.label {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+/* Поля ввода */
+.input {
+  font-size: 16px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+/* Ошибки ввода */
+.inputError {
+  border-color: #e74c3c;
+}
+
+.errorText {
+  color: #e74c3c;
+  font-size: 12px;
+  margin: 0 0 10px 0;
+}
+
+/* Ссылка для восстановления пароля */
+.forgotPassword {
+  font-size: 14px;
+  color: #007bff;
+  margin-bottom: 20px;
+  text-align: right;
+}
+
+/* Кнопка отправки */
+.submitButton {
+  font-size: 16px;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.submitButton:hover {
+  background-color: #0056b3;
+}
+
+/* Блок для перехода к регистрации */
+.redirect {
+  font-size: 14px;
+  text-align: center;
+}
+
+.registerLink {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.registerLink:hover {
+  text-decoration: underline;
+}

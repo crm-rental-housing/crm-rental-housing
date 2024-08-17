@@ -2,124 +2,186 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use Illuminate\Http\Request;
 use App\Models\Entity;
 
 class EntityController extends Controller
 {
   public function index() {
-    try {
-      $entities = Entity::all(); // или User::all()
+    $entities = [];
+    foreach (Entity::orderBy('city', 'asc')->cursor() as $entity) {
+      $entities[] = [
+        'id' => $entity->id,
+        'city' => $entity->city,
+        'street' => $entity->street,
+        'house' => $entity->house,
+        'project' => [
+          'id' => $entity->project_id,
+          'name' => $entity->project->name,
+          'deadline' => $entity->project->deadline,
+          ],
+        'floors_number' => $entity->floors_number,
+        'entrances_number' => $entity->entrances_number,
+        'user' => [
+          'id' => $entity->user_id,
+          'name' => [
+            'first' => $entity->user->info ? $entity->user->info->first_name : null,
+            'last' => $entity->user->info ? $entity->user->info->last_name : null,
+            'role' => $entity->user->role->name,
+          ],
+        ]
+      ];
+    }; // или User::all()
+    if (empty($entities)) {
       return response()->json([
-        'entities' => $entities
+        'message' => 'Объекты не найдены'
       ]);
-    } catch (\Throwable $th) {
-      echo $th;
-      return response()->json([
-        'message' => 'Не удалось получить список объектов',
-      ], 500);
     }
+    return response()->json([
+      'entities' => $entities
+    ]);
   }
 
   public function getProjectEntities($projectId) {
-    try {
-      $entities = Entity::where('project_id', $projectId)->get();
+    $entities = Entity::where('project_id', $projectId)->get();
+    if (empty($entities)) {
       return response()->json([
-        'entities' => $entities,
+        'message' => 'Объектов в проекте не найдены'
       ]);
-    } catch (\Throwable $th) {
-      return response()->json([
-        'message' => 'Не удалось получить данные объекта',
-      ], 500);
     }
+    return response()->json([
+      'entities' => [
+        'id' => $entity->id,
+        'city' => $entity->city,
+        'street' => $entity->street,
+        'house' => $entity->house,
+        'project' => [
+          'id' => $entity->project_id,
+          'name' => $entity->project->name,
+          'deadline' => $entity->project->deadline,
+          ],
+        'floors_number' => $entity->floors_number,
+        'entrances_number' => $entity->entrances_number,
+        'user' => [
+          'id' => $entity->user_id,
+          'name' => [
+            'first' => $entity->user->info ? $entity->user->info->first_name : null,
+            'last' => $entity->user->info ? $entity->user->info->last_name : null,
+            'role' => $entity->user->role->name,
+          ],
+        ]
+      ]
+    ]);
   }
 
   public function getOne($entityId) {
-    try {
-      $entity = Entity::where('id', $entityId)->first();
-      if (!$entity) {
-        return response()->json([
-          'message' => "Объекта с таким ID не существует"
-        ]);
-      }
+    $entity = Entity::where('id', $entityId)->first();
+    if (!$entity) {
       return response()->json([
-        'data' => [
-          'entity' => $entity
-        ]
-      ]);
-    } catch (\Throwable $th) {
-      return response()->json([
-        'message' => 'Не удалось получить данные объекта',
-      ], 500);
+        'message' => "Объекта с таким ID не существует"
+      ], 404);
     }
+    return response()->json([
+      'entity' => [
+        'id' => $entity->id,
+        'city' => $entity->city,
+        'street' => $entity->street,
+        'house' => $entity->house,
+        'project' => [
+          'id' => $entity->project_id,
+          'name' => $entity->project->name,
+          'deadline' => $entity->project->deadline,
+          ],
+        'floors_number' => $entity->floors_number,
+        'entrances_number' => $entity->entrances_number,
+        'user' => [
+          'id' => $entity->user_id,
+          'name' => [
+            'first' => $entity->user->info ? $entity->user->info->first_name : null,
+            'last' => $entity->user->info ? $entity->user->info->last_name : null,
+            'role' => $entity->user->role->name,
+          ],
+        ],
+      ],
+    ]);
   }
 
   public function add(Request $request, $projectId) {
-    try {
-      $user = auth()->user();
-      $validatedData = $request->validate([
-        'city' => 'required|string|max:30',
-        'street' => 'required|string|max:30',
-        'house' => 'required|string|max:5',
-        'floors_number' => 'required|integer|max:50',
-        'entrances_number' => 'required|integer|max:50',
-      ]);
+    $user = auth()->user();
+    $validatedData = Validator::make($request->only(
+      ['city', 'street', 'house', 'floors_number', 'entrances_number']
+    ), [
+      'city' => 'required|string|max:30',
+      'street' => 'required|string|max:30',
+      'house' => 'required|string|max:5',
+      'floors_number' => 'required|integer|max:50',
+      'entrances_number' => 'required|integer|max:50',
+    ]);
 
-      $entity = Entity::create([
-        'city' => $validatedData['city'],
-        'street' => $validatedData['street'],
-        'house' => $validatedData['house'],
-        'floors_number' => $validatedData['floors_number'],
-        'entrances_number' => $validatedData['entrances_number'],
-        'project_id' => $projectId,
-        'user_id' => $user->id,
-      ]);
-    
+    if ($validatedData->fails()) {
       return response()->json([
-        'message' => 'Объект успешно добавлен',
-      ]);
-    } catch (\Throwable $th) {
-      return response()->json([
-        'message' => 'Не удалось добавить объект',
+        'message' => 'Некорректный ввод'
       ], 400);
     }
+    $entity = Entity::create([
+      'city' => $request['city'],
+      'street' => $request['street'],
+      'house' => $request['house'],
+      'floors_number' => $request['floors_number'],
+      'entrances_number' => $request['entrances_number'],
+      'project_id' => $projectId,
+      'user_id' => $user->id,
+    ]);
+    
+    return response()->json([
+      'message' => 'Объект успешно добавлен',
+      'entity_id' => $entity->id,
+    ]);
   }
 
   public function update(Request $request, $projectId, $entityId) {
-    try {
-      $user = auth()->user();
-      $entity = Entity::where('id', $entityId)->first();
-      if (!$entity) {
-        return response()->json([
-          'message' => "Объекта с таким ID не существует"
-        ], 404);
-      }
-      // Дополнить или переделать
-			if (auth()->user()->id !== $entity->user_id || auth()->user()->role->value !== 'ADMIN') {
-				return response()->json([
-					'message' => 'У вас нет прав на обновление данных объекта'
-				], 400);
-			}
+    $user = auth()->user();
+    $entity = Entity::where('id', $entityId)->first();
+    if (!$entity) {
+      return response()->json([
+        'message' => "Объекта с таким ID не существует"
+      ], 404);
+    }
+    // Дополнить или переделать
+		if (auth()->user()->id !== $entity->user_id || auth()->user()->role->value !== 'ADMIN') {
+			return response()->json([
+				'message' => 'У вас нет прав на обновление данных объекта'
+			], 400);
+		}
 
-      $validatedData = $request->validate([
-        'city' => 'required|string|max:30',
-        'street' => 'required|string|min:30',
-        'house' => 'required|string|max:5',
-        'floors_number' => 'required|integer|max:50',
-        'entrances_number' => 'required|integer|max:50',
-        'project_id' => $projectId,
-        'user_id' => $user->id,
-      ]);
-      
-      $entity->update($validatedData);
+    $validatedData = Validator::make($request->only(
+      ['city', 'street', 'house', 'floors_number', 'entrances_number']
+    ), [
+      'city' => 'required|string|max:30',
+      'street' => 'required|string|min:30',
+      'house' => 'required|string|max:5',
+      'floors_number' => 'required|integer|max:50',
+      'entrances_number' => 'required|integer|max:50',
+    ]);
+    if ($validatedData->fails()) {
       return response()->json([
-        'message' => 'Данные объекта успешно обновлены'
-      ]);
-    } catch (\Throwable $th) {
-      return response()->json([
-        'message' => 'Не удалось обновить данные объекта'
+        'message' => 'Некорректный ввод'
       ], 400);
     }
+    $newEntityData = [
+      'city' => $request['city'],
+      'street' => $request['street'],
+      'house' => $request['house'],
+      'floors_number' => $request['floors_number'],
+      'entrances_number' => $request['entrances_number'],
+      'project_id' => $projectId,
+      'user_id' => $user->id,
+    ];
+    $entity->update($newEntityData);
+    return response()->json([
+      'message' => 'Данные объекта успешно обновлены'
+    ]);
   }
 
   public function delete($entityId) {
@@ -131,7 +193,7 @@ class EntityController extends Controller
         ], 404);
       }
       // Дополнить или переделать
-			if (auth()->user()->company->id !== $entity->project->company->id || auth()->user()->role->value !== 'ADMIN') {
+			if (auth()->user()->id !== $entity->user_id || auth()->user()->role->value !== 'ADMIN') {
 				return response()->json([
 					'message' => 'У вас нет прав на удаление объекта'
 				], 400);

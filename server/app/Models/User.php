@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
@@ -54,15 +55,18 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
       $role = $this->role;
+      $company = $this->company;
       return [
+        'id' => $this->id,
         'email' => $this->email,
-        'role' => $role ? $role->value : null
+        'role' => $role ? $role->value : null,
+        'company' => $company ? $company : null,
       ];
     }
 
-    public function info(): BelongsTo 
+    public function info(): HasOne 
     {
-      return $this->belongsTo(UserInfo::class);
+      return $this->hasOne(UserInfo::class);
     }
 
     public function role(): BelongsTo

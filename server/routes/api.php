@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CompanyController;
@@ -14,6 +15,8 @@ use App\Http\Controllers\UserInfoController;
 use App\Http\Controllers\EntityController;
 use App\Http\Controllers\AppartmentTypeController;
 use App\Http\Controllers\AppartmentController;
+use App\Http\Controllers\CompanyAdminController;
+use App\Http\Controllers\DealController;
 
 /**
  * Проверь все маршруты
@@ -35,31 +38,32 @@ Route::prefix('auth')->group(function() {
   Route::get('verify_email', [AuthController::class, 'verifyEmail']);
 });
 
+Route::get('companies', [CompanyController::class, 'index']);
+Route::get('companies/{companyId}', [CompanyController::class, 'getOne']);
+
+Route::get('projects', [ProjectController::class, 'index']);
+Route::get('projects/{projectId}', [ProjectController::class, 'getOne']);
+
+Route::get('entities', [EntityController::class, 'index']);
+Route::get('entities/{entityId}', [EntityController::class, 'getOne']);
+Route::get('project/{projectId}/entities', [EntityController::class, 'getProjectEntities']);
+
+Route::get('appartments', [AppartmentController::class, 'index']);
+Route::get('appartments/{appartmentId}', [AppartmentController::class, 'getOne']);
+Route::get('entities/{entityId}/appartments', [AppartmentController::class, 'getEntityAppartments']);
+
 /**
  * Доступ авторизованным пользователям
  */
 Route::middleware(['auth:api', 'ban'])->group(function() {
+  Route::get('users', [UserController::class, 'index']);
   Route::get('users/me', [UserController::class, 'me']);
   Route::put('users/{userId}', [UserController::class, 'update']);
-
-  Route::get('companies', [CompanyController::class, 'index']);
-  Route::get('companies/{companyId}', [CompanyController::class, 'getOne']);
-
-  Route::get('projects', [ProjectController::class, 'index']);
-  Route::get('projects/{projectId}', [ProjectController::class, 'getOne']);
-
-  Route::get('entities', [EntityController::class, 'index']);
-  Route::get('entities/{entityId}', [EntityController::class, 'getOne']);
-  Route::get('project/{projectId}/entities', [EntityController::class, 'getProjectEntities']);
 
   /**
    * Не доделано. Проблемы с загрузкой файлов изображений на сервер
    */
   Route::get('project/{projectId}/images', [ProjectImageController::class, 'index']);
-
-  Route::get('appartments', [AppartmentController::class, 'index']);
-  Route::get('appartments/{appartmentId}', [AppartmentController::class, 'getOne']);
-  Route::get('entities/{entityId}/appartments', [AppartmentController::class, 'getEntityAppartments']);
 
   Route::get('payment_types', [PaymentTypeController::class, 'index']);
 
@@ -70,10 +74,9 @@ Route::middleware(['auth:api', 'ban'])->group(function() {
  * Доступ администраторам системы, менеджерам системы, SU
  */
 Route::middleware(['auth:api', 'role:ADMIN MANAGER SUPERUSER'])->group(function() {
-  Route::get('users', [UserController::class, 'index']);
+  
   Route::get('users/{userId}', [UserController::class, 'getOne']);
   Route::post('add_company_admin', [UserController::class, 'add'])->middleware('add_role:COMPANY_ADMIN');
-  Route::put('users/{userId}', [UserController::class, 'update']);
 
   Route::post('companies', [CompanyController::class, 'add']);
   Route::put('companies/{companyId}', [CompanyController::class, 'update']);
@@ -88,6 +91,9 @@ Route::middleware(['auth:api', 'role:ADMIN MANAGER SUPERUSER'])->group(function(
  */
 Route::middleware(['auth:api', 'role:ADMIN SUPERUSER'])->group(function() {
   Route::post('add_manager', [UserController::class, 'add'])->middleware('add_role:MANAGER');
+  Route::get('deals/last', [AdminController::class, 'getLastDeals']);
+  Route::get('admin/companies', [AdminController::class, 'getCompanies']);
+  Route::get('managers', [AdminController::class, 'getManagers']);
 });
 
 /**
@@ -95,7 +101,8 @@ Route::middleware(['auth:api', 'role:ADMIN SUPERUSER'])->group(function() {
  * role:COMPANY_ADMIN - пока такое название роли, потом можно поменять
  */
 Route::middleware(['auth:api', 'role:COMPANY_ADMIN'])->group(function() {
-  Route::post('add_company_manager', [UserController::class, 'add'])->middleware('add_role:COMPANY_MANAGER');
+  Route::post('add_company_manager', [CompanyAdminController::class, 'createManager']);
+  Route::get('get_company_managers', [CompanyAdminController::class, 'getManagers']);
 
   Route::delete('projects/{projectId}', [ProjectController::class, 'delete']);
 });
@@ -107,7 +114,7 @@ Route::middleware(['auth:api', 'role:COMPANY_ADMIN'])->group(function() {
 Route::middleware(['auth:api', 'role:COMPANY_MANAGER COMPANY_ADMIN'])->group(function() {
   Route::post('projects', [ProjectController::class, 'add']);
   Route::put('projects/{projectId}', [ProjectController::class, 'update']);
-
+  Route::post('deals', [DealController::class, 'add']);
   // /**
   //  * Не доделано
   //  * НУЖНО ДОБАВИТЬ ЗАГРУЗКУ ФАЙЛОВ ИЗОБРАЖЕНИЙ НА СЕРВЕР

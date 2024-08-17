@@ -1,0 +1,17 @@
+.submenu {
+  padding: 12px;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.103);
+  display: flex;
+  justify-content: center;
+}
+
+.submenu__wrapper {
+  width: 1280px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.submenu__item:hover {
+  color: #007bff;
+}
